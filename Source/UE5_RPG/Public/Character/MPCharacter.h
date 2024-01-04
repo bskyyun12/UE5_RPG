@@ -6,12 +6,21 @@
 #include "Character/MPCharacterBase.h"
 #include "MPCharacter.generated.h"
 
-/**
- * 
- */
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class UE5_RPG_API AMPCharacter : public AMPCharacterBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	AMPCharacter();
+
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	TObjectPtr<UCameraComponent> CameraComponent;
+
 };
