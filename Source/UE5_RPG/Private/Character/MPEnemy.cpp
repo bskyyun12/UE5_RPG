@@ -3,3 +3,12 @@
 
 #include "Character/MPEnemy.h"
 
+void AMPEnemy::HighlightActor()
+{
+	
+}
+
+void AMPEnemy::UnHighlightActor()
+{
+	
+}
