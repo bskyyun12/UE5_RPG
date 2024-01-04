@@ -16,3 +16,8 @@ void AMPCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();	
 }
+
+UAbilitySystemComponent* AMPCharacterBase::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}

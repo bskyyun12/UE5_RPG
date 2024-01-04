@@ -2,11 +2,19 @@
 
 
 #include "Character/MPEnemy.h"
-#include "UE5_RPG\UE5_RPG.h"
+#include "UE5_RPG/UE5_RPG.h"
+#include "AbilitySystem/MPAbilitySystemComponent.h"
+#include "AbilitySystem/MPAttributeSet.h"
 
 AMPEnemy::AMPEnemy()
 {
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
+	AbilitySystemComponent = CreateDefaultSubobject<UMPAbilitySystemComponent>("AbilitySystemComp");
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	AttributeSet = CreateDefaultSubobject<UMPAttributeSet>("AttributeSet");
 }
 
 void AMPEnemy::HighlightActor()
