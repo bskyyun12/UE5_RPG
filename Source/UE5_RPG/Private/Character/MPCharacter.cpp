@@ -2,9 +2,11 @@
 
 
 #include "Character/MPCharacter.h"
+#include "Player/MPPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "AbilitySystemComponent.h"
 
 AMPCharacter::AMPCharacter()
 {
@@ -22,4 +24,29 @@ AMPCharacter::AMPCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComponent->SetupAttachment(SpringArmComponent);
+}
+
+void AMPCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	// For the Server
+	InitAbilityActorInfo();
+}
+
+void AMPCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	
+	// For the Client
+	InitAbilityActorInfo();
+}
+
+void AMPCharacter::InitAbilityActorInfo()
+{
+	AMPPlayerState* MPPlayerState = GetPlayerState<AMPPlayerState>();
+	check(MPPlayerState);
+	MPPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(MPPlayerState, this);
+	AbilitySystemComponent = MPPlayerState->GetAbilitySystemComponent();
+	AttributeSet = MPPlayerState->GetAttributeSet();
 }

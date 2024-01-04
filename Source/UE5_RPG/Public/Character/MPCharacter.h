@@ -8,6 +8,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class AMPPlayerState;
 
 UCLASS()
 class UE5_RPG_API AMPCharacter : public AMPCharacterBase
@@ -23,4 +24,11 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> CameraComponent;
 
+protected:
+
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+
+private:
+	void InitAbilityActorInfo();
 };
