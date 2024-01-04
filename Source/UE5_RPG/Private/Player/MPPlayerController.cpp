@@ -4,10 +4,50 @@
 #include "Player/MPPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include <Interaction\EnemyInterface.h>
 
 AMPPlayerController::AMPPlayerController()
 {
 	bReplicates = true;
+}
+
+void AMPPlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+
+	CursorTrace();
+}
+
+void AMPPlayerController::CursorTrace()
+{
+	FHitResult CursorHit;
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
+	if (!CursorHit.bBlockingHit)
+	{
+		return;
+	}
+
+	LastActor = ThisActor;
+	ThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
+
+	if (!LastActor && ThisActor)
+	{
+		ThisActor->HighlightActor();
+	}
+
+	if (LastActor && !ThisActor)
+	{
+		LastActor->UnHighlightActor();
+	}
+
+	if (LastActor && ThisActor)
+	{
+		if (LastActor != ThisActor)
+		{
+			LastActor->UnHighlightActor();
+			ThisActor->HighlightActor();
+		}
+	}
 }
 
 void AMPPlayerController::BeginPlay()
@@ -41,7 +81,7 @@ void AMPPlayerController::Move(const FInputActionValue& InputActionValue)
 	const FVector2D InputAxisVector = InputActionValue.Get<FVector2D>();
 	const FRotator Rotation = GetControlRotation();
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
-	
+
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 

@@ -15,6 +15,9 @@ class UE5_RPG_API AMPEnemy : public AMPCharacterBase, public IEnemyInterface
 {
 	GENERATED_BODY()
 	
+public:
+	AMPEnemy();
+
 	// Inherited via IEnemyInterface
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
