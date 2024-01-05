@@ -3,6 +3,9 @@
 
 #include "Character/MPCharacter.h"
 #include "Player/MPPlayerState.h"
+#include "Player/MPPlayerController.h"
+#include "UI/HUD/MPHUD.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -37,7 +40,7 @@ void AMPCharacter::PossessedBy(AController* NewController)
 void AMPCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-	
+
 	// For the Client
 	InitAbilityActorInfo();
 }
@@ -49,4 +52,14 @@ void AMPCharacter::InitAbilityActorInfo()
 	MPPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(MPPlayerState, this);
 	AbilitySystemComponent = MPPlayerState->GetAbilitySystemComponent();
 	AttributeSet = MPPlayerState->GetAttributeSet();
+
+	AMPPlayerController* MPPlayerController = Cast<AMPPlayerController>(GetController());
+	if (MPPlayerController)
+	{
+		AMPHUD* MPHUD = MPPlayerController->GetHUD<AMPHUD>();
+		if (MPHUD)
+		{
+			MPHUD->InitOverlay(MPPlayerController, MPPlayerState, AbilitySystemComponent, AttributeSet);
+		}
+	}
 }

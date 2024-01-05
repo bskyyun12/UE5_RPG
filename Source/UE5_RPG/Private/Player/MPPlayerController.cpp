@@ -56,8 +56,10 @@ void AMPPlayerController::BeginPlay()
 	check(MPContext);
 
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(Subsystem);
-	Subsystem->AddMappingContext(MPContext, 0);
+	if (Subsystem)
+	{
+		Subsystem->AddMappingContext(MPContext, 0);
+	}
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;

@@ -7,6 +7,11 @@
 #include "MPHUD.generated.h"
 
 class UMPUserWidget;
+struct FWidgetControllerParams;
+class UOverlayWidgetController;
+class UOverlayWidget;
+class UAbilitySystemComponent;
+class UAttributeSet;
 
 UCLASS()
 class UE5_RPG_API AMPHUD : public AHUD
@@ -17,11 +22,18 @@ public:
 	UPROPERTY()
 	TObjectPtr<UMPUserWidget> OverlayWidget;
 
+	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WidgetControllerParams);
+
+	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 protected:
-	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UMPUserWidget> OverlayWidgetClass;
 
+	UPROPERTY()
+	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
 };
