@@ -15,3 +15,8 @@ void UMPWidgetController::BroadcastInitialValues()
 {
 	
 }
+
+void UMPWidgetController::BindCallbacksToDependencies()
+{
+	
+}

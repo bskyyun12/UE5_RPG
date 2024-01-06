@@ -28,6 +28,7 @@ void AMPEffectActor::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 		
 		UMPAttributeSet* MutableAuraAttributeSet = const_cast<UMPAttributeSet*>(MPAttributeSet);
 		MutableAuraAttributeSet->SetHealth(MPAttributeSet->GetHealth() + 25.f);
+		MutableAuraAttributeSet->SetMana(MPAttributeSet->GetMana() - 25.f);
 		Destroy();
 	}
 }
