@@ -6,9 +6,9 @@
 
 UMPAttributeSet::UMPAttributeSet()
 {
-	InitHealth(50.f);
+	InitHealth(20.f);
 	InitMaxHealth(100.f);
-	InitMana(25.f);
+	InitMana(10.f);
 	InitMaxMana(50.f);
 }
 
@@ -20,6 +20,20 @@ void UMPAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, Mana, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxMana, COND_None, REPNOTIFY_Always);
+}
+
+void UMPAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeBaseChange(Attribute, NewValue);
+
+	if (Attribute == GetHealthAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
+	}
+	if (Attribute == GetManaAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
+	}
 }
 
 void UMPAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
