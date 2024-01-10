@@ -13,9 +13,5 @@ void UMPAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* ASC, cons
 	FGameplayTagContainer TagContainer;
 	EffectSpec.GetAllAssetTags(TagContainer);
 
-	for (const FGameplayTag& Tag : TagContainer)
-	{
-		const FString Msg = FString::Printf(TEXT("GE Tag: %s"), *Tag.GetTagName().ToString());
-		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Blue, Msg);
-	}
+	EffectAssetTags.Broadcast(TagContainer);
 }

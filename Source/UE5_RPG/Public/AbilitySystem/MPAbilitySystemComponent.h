@@ -6,9 +6,8 @@
 #include "AbilitySystemComponent.h"
 #include "MPAbilitySystemComponent.generated.h"
 
-/**
- *
- */
+DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagsDelegate, const FGameplayTagContainer& /*AssetTags*/);
+
 UCLASS()
 class UE5_RPG_API UMPAbilitySystemComponent : public UAbilitySystemComponent
 {
@@ -16,6 +15,8 @@ class UE5_RPG_API UMPAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	void AbilityInfoSet();
+
+	FEffectAssetTagsDelegate EffectAssetTags;
 
 protected:
 
