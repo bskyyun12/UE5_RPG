@@ -2,14 +2,15 @@
 
 
 #include "Character/MPCharacter.h"
+#include "AbilitySystem\MPAbilitySystemComponent.h"
 #include "Player/MPPlayerState.h"
 #include "Player/MPPlayerController.h"
 #include "UI/HUD/MPHUD.h"
 
-#include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
-#include "AbilitySystemComponent.h"
+#include <GameFramework/CharacterMovementComponent.h>
+#include <GameFramework/SpringArmComponent.h>
+#include <Camera/CameraComponent.h>
+#include <AbilitySystemComponent.h>
 
 AMPCharacter::AMPCharacter()
 {
@@ -49,8 +50,14 @@ void AMPCharacter::InitAbilityActorInfo()
 {
 	AMPPlayerState* MPPlayerState = GetPlayerState<AMPPlayerState>();
 	check(MPPlayerState);
-	MPPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(MPPlayerState, this);
 	AbilitySystemComponent = MPPlayerState->GetAbilitySystemComponent();
+	check(AbilitySystemComponent);
+	AbilitySystemComponent->InitAbilityActorInfo(MPPlayerState, this);
+	
+	UMPAbilitySystemComponent* MPAbilitySystemComponent = Cast<UMPAbilitySystemComponent>(AbilitySystemComponent);
+	check(MPAbilitySystemComponent);
+	MPAbilitySystemComponent->AbilityInfoSet();
+
 	AttributeSet = MPPlayerState->GetAttributeSet();
 
 	AMPPlayerController* MPPlayerController = Cast<AMPPlayerController>(GetController());

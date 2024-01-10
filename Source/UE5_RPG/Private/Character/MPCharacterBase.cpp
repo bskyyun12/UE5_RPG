@@ -17,6 +17,10 @@ void AMPCharacterBase::BeginPlay()
 	Super::BeginPlay();	
 }
 
+void AMPCharacterBase::InitAbilityActorInfo()
+{
+}
+
 UAbilitySystemComponent* AMPCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
