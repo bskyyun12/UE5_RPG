@@ -18,42 +18,47 @@ void UOverlayWidgetController::BroadcastInitialValues()
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	const UMPAttributeSet* MPAttributeSet = CastChecked<UMPAttributeSet>(AttributeSet);
-
-	check(AbilitySystemComponent);
+	if (!ensure(MPAttributeSet))
+	{
+		return;
+	}
 
 	UMPAbilitySystemComponent* MPAbilitySystemComponent = Cast<UMPAbilitySystemComponent>(AbilitySystemComponent);
-	check(MPAbilitySystemComponent);
+	if (!ensure(MPAbilitySystemComponent))
+	{
+		return;
+	}
 
 	// Health change
-	FOnGameplayAttributeValueChange& HealthChanged = MPAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MPAttributeSet->GetHealthAttribute());
-	HealthChanged.AddLambda([this](const FOnAttributeChangeData& Data)
-		{
-			OnHealthChanged.Broadcast(Data.NewValue);
-		}
+	MPAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MPAttributeSet->GetHealthAttribute())
+		.AddLambda([this](const FOnAttributeChangeData& Data)
+			{
+				OnHealthChanged.Broadcast(Data.NewValue);
+			}
 	);
 
 	// MaxHealth change
-	FOnGameplayAttributeValueChange& MaxHealthChanged = MPAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MPAttributeSet->GetMaxHealthAttribute());
-	MaxHealthChanged.AddLambda([this](const FOnAttributeChangeData& Data)
-		{
-			OnMaxHealthChanged.Broadcast(Data.NewValue);
-		}
+	MPAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MPAttributeSet->GetMaxHealthAttribute())
+		.AddLambda([this](const FOnAttributeChangeData& Data)
+			{
+				OnMaxHealthChanged.Broadcast(Data.NewValue);
+			}
 	);
 
 	// Mana change
-	FOnGameplayAttributeValueChange& ManaChanged = MPAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MPAttributeSet->GetManaAttribute());
-	ManaChanged.AddLambda([this](const FOnAttributeChangeData& Data)
-		{
-			OnManaChanged.Broadcast(Data.NewValue);
-		}
+	MPAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MPAttributeSet->GetManaAttribute())
+		.AddLambda([this](const FOnAttributeChangeData& Data)
+			{
+				OnManaChanged.Broadcast(Data.NewValue);
+			}
 	);
 
 	// MaxMana change
-	FOnGameplayAttributeValueChange& MaxManaChanged = MPAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MPAttributeSet->GetMaxManaAttribute());
-	MaxManaChanged.AddLambda([this](const FOnAttributeChangeData& Data)
-		{
-			OnMaxManaChanged.Broadcast(Data.NewValue);
-		}
+	MPAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MPAttributeSet->GetMaxManaAttribute())
+		.AddLambda([this](const FOnAttributeChangeData& Data)
+			{
+				OnMaxManaChanged.Broadcast(Data.NewValue);
+			}
 	);
 
 	// EffectAssetTags
