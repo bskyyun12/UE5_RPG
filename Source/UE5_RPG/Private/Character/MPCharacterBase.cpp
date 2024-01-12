@@ -2,6 +2,7 @@
 
 
 #include "Character/MPCharacterBase.h"
+#include "AbilitySystemComponent.h"
 
 AMPCharacterBase::AMPCharacterBase()
 {
@@ -19,6 +20,24 @@ void AMPCharacterBase::BeginPlay()
 
 void AMPCharacterBase::InitAbilityActorInfo()
 {
+}
+
+void AMPCharacterBase::InitializePrimaryAttributes() const
+{
+	if (!ensure(GetAbilitySystemComponent()))
+	{
+		return;
+	}
+		
+	if (!ensure(DefaultPrimaryAttributes))
+	{
+		return;
+	}
+
+	const FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	const FGameplayEffectSpecHandle EffectSpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(DefaultPrimaryAttributes, 1.f, EffectContextHandle);
+	const FGameplayEffectSpec* EffectSpec = EffectSpecHandle.Data.Get();
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*EffectSpec, GetAbilitySystemComponent());
 }
 
 UAbilitySystemComponent* AMPCharacterBase::GetAbilitySystemComponent() const

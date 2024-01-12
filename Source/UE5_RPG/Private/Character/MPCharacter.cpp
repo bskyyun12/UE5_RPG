@@ -49,13 +49,25 @@ void AMPCharacter::OnRep_PlayerState()
 void AMPCharacter::InitAbilityActorInfo()
 {
 	AMPPlayerState* MPPlayerState = GetPlayerState<AMPPlayerState>();
-	check(MPPlayerState);
+	if (!ensure(MPPlayerState))
+	{
+		return;
+	}
+
 	AbilitySystemComponent = MPPlayerState->GetAbilitySystemComponent();
-	check(AbilitySystemComponent);
+	if (!ensure(AbilitySystemComponent))
+	{
+		return;
+	}
+
 	AbilitySystemComponent->InitAbilityActorInfo(MPPlayerState, this);
 	
 	UMPAbilitySystemComponent* MPAbilitySystemComponent = Cast<UMPAbilitySystemComponent>(AbilitySystemComponent);
-	check(MPAbilitySystemComponent);
+	if (!ensure(MPAbilitySystemComponent))
+	{
+		return;
+	}
+
 	MPAbilitySystemComponent->AbilityInfoSet();
 
 	AttributeSet = MPPlayerState->GetAttributeSet();
@@ -69,4 +81,6 @@ void AMPCharacter::InitAbilityActorInfo()
 			MPHUD->InitOverlay(MPPlayerController, MPPlayerState, AbilitySystemComponent, AttributeSet);
 		}
 	}
+
+	InitializePrimaryAttributes();
 }
