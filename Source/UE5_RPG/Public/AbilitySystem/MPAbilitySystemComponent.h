@@ -6,7 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "MPAbilitySystemComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagsDelegate, const FGameplayTagContainer& /*AssetTags*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAssetTagsOnEffectAppliedDelegate, const FGameplayTagContainer& /*AssetTags*/);
 
 UCLASS()
 class UE5_RPG_API UMPAbilitySystemComponent : public UAbilitySystemComponent
@@ -14,13 +14,13 @@ class UE5_RPG_API UMPAbilitySystemComponent : public UAbilitySystemComponent
 	GENERATED_BODY()
 
 public:
-	void AbilityInfoSet();
+	// Called in AMPCharacterBase::InitAbilityActorInfo() after UAbilitySystemComponent::InitAbilityActorInfo is done.
+	void BindEffectAppliedToSelfEvent();
 
-	FEffectAssetTagsDelegate EffectAssetTags;
+	FOnAssetTagsOnEffectAppliedDelegate OnReceiveAssetTagsWhenEffectAppliedToSelf;
 
 protected:
-
 	UFUNCTION()
-	void EffectApplied(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
+	void OnEffectAppliedToSelf(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
 
 };

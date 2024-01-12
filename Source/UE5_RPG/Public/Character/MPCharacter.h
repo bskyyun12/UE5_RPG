@@ -25,8 +25,14 @@ public:
 	TObjectPtr<UCameraComponent> CameraComponent;
 
 protected:
-
+	/** 
+	 * Called when this Pawn is possessed. Only called on the server (or in standalone).
+	 * @param NewController The controller possessing this pawn
+	 */
 	virtual void PossessedBy(AController* NewController) override;
+
+	/** If Pawn is possessed by a player, points to its Player State.  Needed for network play as controllers are not replicated to clients. */
 	virtual void OnRep_PlayerState() override;
+	
 	virtual void InitAbilityActorInfo() override;
 };

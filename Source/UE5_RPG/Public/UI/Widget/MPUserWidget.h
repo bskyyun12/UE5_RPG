@@ -6,6 +6,11 @@
 #include "Blueprint/UserWidget.h"
 #include "MPUserWidget.generated.h"
 
+class UMPWidgetController;
+
+/*
+* All widgets in this project will be created from this class.
+*/
 UCLASS()
 class UE5_RPG_API UMPUserWidget : public UUserWidget
 {
@@ -13,12 +18,13 @@ class UE5_RPG_API UMPUserWidget : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetWidgetController(UObject* InWidgetController);
+	void SetWidgetController(UMPWidgetController* InWidgetController);
 
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UObject> WidgetController;
+	TObjectPtr<UMPWidgetController> WidgetController;
 
 protected:
-	UFUNCTION(BlueprintImplementableEvent)
-	void WidgetControllerSet();
+	// Called when setting a "valid" WidgetController.
+	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName = "OnSetWidgetController"))
+	void BP_OnSetWidgetController();
 };

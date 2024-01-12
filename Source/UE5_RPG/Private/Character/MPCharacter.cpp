@@ -14,6 +14,7 @@
 
 AMPCharacter::AMPCharacter()
 {
+	// Begin A typical top-down setup
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
@@ -28,21 +29,26 @@ AMPCharacter::AMPCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComponent->SetupAttachment(SpringArmComponent);
+	// End A typical top-down setup
 }
 
+//Only called on the server
 void AMPCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	// For the Server
+	// Server InitAbilityActorInfo
 	InitAbilityActorInfo();
+
+	// Initializing primary attributes on the server. Clients will get replicated values.
+	InitializePrimaryAttributes();
 }
 
 void AMPCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	// For the Client
+	// Client InitAbilityActorInfo
 	InitAbilityActorInfo();
 }
 
@@ -59,28 +65,29 @@ void AMPCharacter::InitAbilityActorInfo()
 	{
 		return;
 	}
-
 	AbilitySystemComponent->InitAbilityActorInfo(MPPlayerState, this);
-	
+
 	UMPAbilitySystemComponent* MPAbilitySystemComponent = Cast<UMPAbilitySystemComponent>(AbilitySystemComponent);
 	if (!ensure(MPAbilitySystemComponent))
 	{
 		return;
 	}
-
-	MPAbilitySystemComponent->AbilityInfoSet();
+	MPAbilitySystemComponent->BindEffectAppliedToSelfEvent();
 
 	AttributeSet = MPPlayerState->GetAttributeSet();
-
-	AMPPlayerController* MPPlayerController = Cast<AMPPlayerController>(GetController());
-	if (MPPlayerController)
+	if (!ensure(AttributeSet))
 	{
-		AMPHUD* MPHUD = MPPlayerController->GetHUD<AMPHUD>();
-		if (MPHUD)
-		{
-			MPHUD->InitOverlay(MPPlayerController, MPPlayerState, AbilitySystemComponent, AttributeSet);
-		}
+		return;
 	}
 
-	InitializePrimaryAttributes();
+	// HUD setup - Initialize Overlay widget
+	AMPPlayerController* MPPlayerController = Cast<AMPPlayerController>(GetController());
+	if (ensureAlways(MPPlayerController))
+	{
+		AMPHUD* MPHUD = MPPlayerController->GetHUD<AMPHUD>();
+		if (ensureAlways(MPHUD))
+		{
+			MPHUD->CreateAndInitOverlayWidget(MPPlayerController, MPPlayerState, AbilitySystemComponent, AttributeSet);
+		}
+	}
 }

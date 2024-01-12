@@ -62,7 +62,7 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	);
 
 	// EffectAssetTags
-	MPAbilitySystemComponent->EffectAssetTags.AddLambda([this](const FGameplayTagContainer& AssetTags)
+	MPAbilitySystemComponent->OnReceiveAssetTagsWhenEffectAppliedToSelf.AddLambda([this](const FGameplayTagContainer& AssetTags)
 		{
 			for (const FGameplayTag& Tag : AssetTags)
 			{

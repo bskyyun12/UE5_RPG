@@ -22,24 +22,46 @@ public:
 	// Inherited via IAbilitySystemInterface
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	// Creating getter for AttributeSet is convenient
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 protected:
-	virtual void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, Category = "MPCharacter|Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
-	UPROPERTY()
+	// AbilitySystemComponent is initially set in PlayerState(if Player controlled character) or in child classes(if AI controlled character)
+	UPROPERTY(VisibleAnywhere, Category = "MPCharacter|GAS")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
-
-	UPROPERTY()
+	
+	// AttributeSet is initially set in PlayerState(if Player controlled character) or in child classes(if AI controlled character)
+	UPROPERTY(VisibleAnywhere,Category = "MPCharacter|GAS")
 	TObjectPtr<UAttributeSet> AttributeSet;
 
+	/* 
+	* Each child will override this function and call UAbilitySystemComponent::InitAbilityActorInfo
+	* This must be called after possession.
+	* 1. Player controlled character, ASC lives on the Pawn 
+	*		Server - PossessedBy
+	*		Client - AcknowledgePossession
+	* 2. Player controlled character, ASC lives on the PlayerState
+	*		Server - PossessedBy
+	*		Client - OnRep_PlayerState
+	* 3. AI controlled character
+	*		Server - BeginPlay
+	*		Client - BeginPlay	* 
+	* In this project, we use 2 and 3
+	*/
 	virtual void InitAbilityActorInfo();
-		
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Attributes")
+
+	/*
+	* There are 2 ways to set default values for attributes
+	* 1. Using DefaultStartingData in UAbilitySystemComponent. You need to create a matching DataTable(FAttributeMetaData) and UAttributeSet::InitFromMetaDataTable will be called.
+	* 2. Using GameplayEffect (Preferred way)
+	* In this project, I will use the second way.
+	*/
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "MPCharacter|GAS|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
 	
+	// Applying GameplayEffect using DefaultPrimaryAttributes
 	void InitializePrimaryAttributes() const;
 };

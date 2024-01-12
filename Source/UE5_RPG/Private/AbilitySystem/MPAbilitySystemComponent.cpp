@@ -3,15 +3,14 @@
 
 #include "AbilitySystem/MPAbilitySystemComponent.h"
 
-void UMPAbilitySystemComponent::AbilityInfoSet()
+void UMPAbilitySystemComponent::BindEffectAppliedToSelfEvent()
 {
-	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &ThisClass::EffectApplied);
+	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &ThisClass::OnEffectAppliedToSelf);
 }
 
-void UMPAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
+void UMPAbilitySystemComponent::OnEffectAppliedToSelf(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	FGameplayTagContainer TagContainer;
 	EffectSpec.GetAllAssetTags(TagContainer);
-
-	EffectAssetTags.Broadcast(TagContainer);
+	OnReceiveAssetTagsWhenEffectAppliedToSelf.Broadcast(TagContainer);
 }

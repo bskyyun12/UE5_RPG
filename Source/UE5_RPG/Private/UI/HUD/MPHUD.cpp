@@ -9,6 +9,11 @@ UOverlayWidgetController* AMPHUD::GetOverlayWidgetController(const FWidgetContro
 {
 	if (OverlayWidgetController == nullptr)
 	{
+		if (!ensureAlwaysMsgf(OverlayWidgetControllerClass, TEXT("OverlayWidgetControllerClass is nullptr. Please fill out BP_MPHUD")))
+		{
+			return nullptr;
+		}
+
 		OverlayWidgetController = NewObject<UOverlayWidgetController>(this, OverlayWidgetControllerClass);
 		OverlayWidgetController->SetWidgetControllerParams(WidgetControllerParams);
 		OverlayWidgetController->BindCallbacksToDependencies();
@@ -18,19 +23,23 @@ UOverlayWidgetController* AMPHUD::GetOverlayWidgetController(const FWidgetContro
 	return OverlayWidgetController;
 }
 
-void AMPHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
+void AMPHUD::CreateAndInitOverlayWidget(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
 {
-	checkf(OverlayWidgetClass, TEXT("OverlayWidgetClass is nullptr. Please fill out BP_MPHUD"));
-	checkf(OverlayWidgetControllerClass, TEXT("OverlayWidgetControllerClass is nullptr. Please fill out BP_MPHUD"));
+	if (!ensureAlwaysMsgf(OverlayWidgetClass, TEXT("OverlayWidgetClass is nullptr. Please fill out BP_MPHUD")))
+	{
+		return;
+	}
 
-	UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), OverlayWidgetClass);
-	OverlayWidget = Cast<UMPUserWidget>(Widget);
+	UMPUserWidget* MPOverlayWidget = CreateWidget<UMPUserWidget>(GetWorld(), OverlayWidgetClass);
+	if (!ensure(MPOverlayWidget))
+	{
+		return;
+	}
 
+	// Set widget controller
 	const FWidgetControllerParams WidgetControllerParams(PC, PS, ASC, AS);
 	UOverlayWidgetController* WidgetController = GetOverlayWidgetController(WidgetControllerParams);
+	MPOverlayWidget->SetWidgetController(WidgetController);
 
-	OverlayWidget->SetWidgetController(WidgetController);
-	WidgetController->BroadcastInitialValues();
-
-	Widget->AddToViewport();
+	MPOverlayWidget->AddToViewport();
 }
