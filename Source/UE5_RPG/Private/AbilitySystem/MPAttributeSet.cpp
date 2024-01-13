@@ -9,8 +9,6 @@
 
 UMPAttributeSet::UMPAttributeSet()
 {
-	InitHealth(20.f);
-	InitMana(10.f);
 }
 
 void UMPAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

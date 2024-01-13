@@ -66,6 +66,9 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "MPCharacter|GAS|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributes;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "MPCharacter|GAS|Attributes")
+	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
 	
 	// Applying GameplayEffect using DefaultPrimaryAttributes, DefaultSecondaryAttributes
 	void InitializeDefaultAttributes() const;	
