@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "Interaction/CombatInterface.h"
 #include "GameFramework/Character.h"
 #include "MPCharacterBase.generated.h"
 
@@ -13,7 +14,7 @@ class UGameplayEffect;
 struct FGameplayEffectSpec;
 
 UCLASS(Abstract)
-class UE5_RPG_API AMPCharacterBase : public ACharacter, public IAbilitySystemInterface
+class UE5_RPG_API AMPCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 

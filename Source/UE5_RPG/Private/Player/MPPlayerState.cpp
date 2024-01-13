@@ -4,6 +4,7 @@
 #include "Player/MPPlayerState.h"
 #include "AbilitySystem/MPAbilitySystemComponent.h"
 #include "AbilitySystem/MPAttributeSet.h"
+#include "Net/UnrealNetwork.h"
 
 AMPPlayerState::AMPPlayerState()
 {
@@ -29,7 +30,19 @@ AMPPlayerState::AMPPlayerState()
 	NetUpdateFrequency = 100.f;
 }
 
+void AMPPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, Level);
+}
+
 UAbilitySystemComponent* AMPPlayerState::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void AMPPlayerState::OnRep_Level(int32 OldLevel)
+{
+
 }

@@ -8,13 +8,13 @@
 #include "MPEnemy.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class UE5_RPG_API AMPEnemy : public AMPCharacterBase, public IEnemyInterface
 {
 	GENERATED_BODY()
-	
+
 public:
 	AMPEnemy();
 
@@ -22,8 +22,16 @@ public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 	//~ End IEnemyInterface
+	
+	//~ Begin IEnemyInterface
+	virtual int32 GetPlayerLevel() override;
+	//~ End IEnemyInterface
+
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character defaults")
+	int32 Level = 1;
 };

@@ -32,6 +32,16 @@ AMPCharacter::AMPCharacter()
 	// End A typical top-down setup
 }
 
+int32 AMPCharacter::GetPlayerLevel()
+{
+	const AMPPlayerState* MPPlayerState = GetPlayerState<AMPPlayerState>();
+	if (!ensure(MPPlayerState))
+	{
+		return 0;
+	}
+	return MPPlayerState->GetPlayerLevel();
+}
+
 //Only called on the server
 void AMPCharacter::PossessedBy(AController* NewController)
 {

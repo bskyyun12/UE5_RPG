@@ -44,6 +44,11 @@ void AMPEnemy::UnHighlightActor()
 	Weapon->SetRenderCustomDepth(false);
 }
 
+int32 AMPEnemy::GetPlayerLevel()
+{
+	return Level;
+}
+
 void AMPEnemy::BeginPlay()
 {
 	Super::BeginPlay();

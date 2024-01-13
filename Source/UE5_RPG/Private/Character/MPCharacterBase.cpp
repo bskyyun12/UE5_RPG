@@ -59,7 +59,8 @@ void AMPCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClas
 		return;
 	}
 
-	const FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
+	FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(this);
 	const FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(EffectClass, Level, EffectContextHandle);
 	const FGameplayEffectSpec EffectSpec = *EffectSpecHandle.Data.Get();
 	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(EffectSpec, AbilitySystemComponent);

@@ -23,6 +23,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> CameraComponent;
+	
+	//~ Begin IEnemyInterface
+	virtual int32 GetPlayerLevel() override;
+	//~ End IEnemyInterface
+
 
 protected:
 	/** 
