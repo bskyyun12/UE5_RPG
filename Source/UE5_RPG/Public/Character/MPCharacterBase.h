@@ -10,6 +10,7 @@
 class UAbilitySystemComponent;
 class UAttributeSet;
 class UGameplayEffect;
+struct FGameplayEffectSpec;
 
 UCLASS(Abstract)
 class UE5_RPG_API AMPCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -62,6 +63,11 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "MPCharacter|GAS|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
 	
-	// Applying GameplayEffect using DefaultPrimaryAttributes
-	void InitializePrimaryAttributes() const;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "MPCharacter|GAS|Attributes")
+	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributes;
+	
+	// Applying GameplayEffect using DefaultPrimaryAttributes, DefaultSecondaryAttributes
+	void InitializeDefaultAttributes() const;	
+
+	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, const float& Level) const;
 };

@@ -53,10 +53,13 @@ void AMPPlayerController::CursorTrace()
 void AMPPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	check(MPContext);
+	if (!ensureAlwaysMsgf(MPContext, TEXT("InputMappingContext is missing in BP_MPPlayerController")))
+	{
+		return;
+	}
 
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	if (Subsystem)
+	if (ensure(Subsystem))
 	{
 		Subsystem->AddMappingContext(MPContext, 0);
 	}

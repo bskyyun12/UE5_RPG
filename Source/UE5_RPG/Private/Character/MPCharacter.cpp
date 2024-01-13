@@ -40,8 +40,8 @@ void AMPCharacter::PossessedBy(AController* NewController)
 	// Server InitAbilityActorInfo
 	InitAbilityActorInfo();
 
-	// Initializing primary attributes on the server. Clients will get replicated values.
-	InitializePrimaryAttributes();
+	// Initializing attributes on the server. Clients will get replicated values.
+	InitializeDefaultAttributes();
 }
 
 void AMPCharacter::OnRep_PlayerState()
