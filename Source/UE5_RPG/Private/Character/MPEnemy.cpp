@@ -69,5 +69,5 @@ void AMPEnemy::InitAbilityActorInfo()
 	{
 		return;
 	}
-	MPAbilitySystemComponent->BindEffectAppliedToSelfEvent();
+	MPAbilitySystemComponent->OnInitAbilityActorInfo();
 }

@@ -3,7 +3,7 @@
 
 #include "AbilitySystem/MPAbilitySystemComponent.h"
 
-void UMPAbilitySystemComponent::BindEffectAppliedToSelfEvent()
+void UMPAbilitySystemComponent::OnInitAbilityActorInfo()
 {
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &ThisClass::OnEffectAppliedToSelf);
 }

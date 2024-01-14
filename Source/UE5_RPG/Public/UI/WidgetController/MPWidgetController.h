@@ -39,8 +39,10 @@ class UE5_RPG_API UMPWidgetController : public UObject
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetControllerParams(const FWidgetControllerParams& WidgetControllerParams);
-
+	
+	UFUNCTION(BlueprintCallable)
 	virtual void BroadcastInitialValues();
+
 	virtual void BindCallbacksToDependencies();
 
 protected:

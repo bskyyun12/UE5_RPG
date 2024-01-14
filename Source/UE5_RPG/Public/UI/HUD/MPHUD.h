@@ -20,7 +20,8 @@ class UE5_RPG_API AMPHUD : public AHUD
 
 public:
 	// if OverlayWidgetController is nullptr, create one with given OverlayWidgetControllerClass
-	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WidgetControllerParams);
+	UOverlayWidgetController* CreateOrGetOverlayWidgetController(const FWidgetControllerParams& WidgetControllerParams);
+	UAttributeMenuWidgetController* CreateOrGetAttributeMenuWidgetController(const FWidgetControllerParams& WidgetControllerParams);
 
 	void CreateAndInitOverlayWidget(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 protected:
@@ -34,4 +35,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
+
+	UPROPERTY()
+	TObjectPtr<UAttributeMenuWidgetController> AttributeMenuWidgetController;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UAttributeMenuWidgetController> AttributeMenuWidgetControllerClass;
 };

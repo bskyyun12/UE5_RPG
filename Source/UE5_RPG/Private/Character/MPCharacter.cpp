@@ -87,7 +87,7 @@ void AMPCharacter::InitAbilityActorInfo()
 	{
 		return;
 	}
-	MPAbilitySystemComponent->BindEffectAppliedToSelfEvent();
+	MPAbilitySystemComponent->OnInitAbilityActorInfo();
 
 	AttributeSet = MPPlayerState->GetAttributeSet();
 	if (!ensure(AttributeSet))

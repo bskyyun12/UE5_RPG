@@ -15,7 +15,7 @@ class UE5_RPG_API UMPAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	// Called in AMPCharacterBase::InitAbilityActorInfo() after UAbilitySystemComponent::InitAbilityActorInfo is done.
-	void BindEffectAppliedToSelfEvent();
+	void OnInitAbilityActorInfo();
 
 	FOnAssetTagsOnEffectAppliedDelegate OnReceiveAssetTagsWhenEffectAppliedToSelf;
 

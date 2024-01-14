@@ -59,10 +59,10 @@ public:
 	/*
 	*	Primary Attributes
 	* 
-	*	Strength: Increases physical damage.
-	*	Intelligence: Increases magical damage, Mana Regeneration, and Max Mana.
-	*	Resilience: Increases Armor and Armor Penetration.
-	*	Vigor: Increases Max Health and Health Regeneration.
+	*	Strength: Increases physical damage
+	*	Intelligence: Increases magical damage, Mana Regeneration, and Max Mana
+	*	Resilience: Increases Armor and Armor Penetration
+	*	Vigor: Increases Max Health and Health Regeneration
 	*/
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
 	FGameplayAttributeData Strength;
@@ -91,26 +91,26 @@ public:
 	/*
 	*	Secondary Attributes
 	* 
-	*	Armor: Reduces damange taken, improves Block Chance.
-	*			- Influenced by Resilience.
-	*	Armor Penetration: Ignores percentage of enemy Armor, increases Crit Hit Chance.
-	*			- Influenced by Resilience.
-	*	Block Chance: Chance to cut incoming damage in half.
-	*			- Influenced by Armor.
-	*	Critical Hit Chance: Chance to double damage plus critial hit bonus.
-	*			- Influenced by Armor Penetration.
-	*	Critical Hit Damage: Bonus damage added when a critical hit is scored.
-	*			- Influenced by Armor Penetration.
-	*	Critical Hit Resistance: Reduces critical hit chance of attacking enemies.
-	*			- Influenced by Armor.
-	*	Health Regeneration: Amount of Health regenerated every 1 second.
-	*			- Influenced by Vigor.
-	*	Mana Regeneration: Amount of Mana regenerated every 1 second.
-	*			- Influenced by Intelligence.
-	*	Max Health: Maximum anount of Health obtainable.
-	*			- Influenced by Vigor.
-	*	Max Mana: Maximum anount of Mana obtainable.
-	*			- Influenced by Intelligence.
+	*	Armor: Reduces damange taken, improves Block Chance
+	*			- Influenced by Resilience
+	*	ArmorPenetration: Ignores percentage of enemy Armor, increases Crit Hit Chance
+	*			- Influenced by Resilience
+	*	BlockChance: Chance to cut incoming damage in half
+	*			- Influenced by Armor
+	*	CriticalHitChance: Chance to double damage plus critial hit bonus
+	*			- Influenced by Armor Penetration
+	*	CriticalHitDamage: Bonus damage added when a critical hit is scored
+	*			- Influenced by Armor Penetration
+	*	CriticalHitResistance: Reduces critical hit chance of attacking enemies
+	*			- Influenced by Armor
+	*	HealthRegeneration: Amount of Health regenerated every 1 second
+	*			- Influenced by Vigor
+	*	ManaRegeneration: Amount of Mana regenerated every 1 second
+	*			- Influenced by Intelligence
+	*	MaxHealth: Maximum amount of Health obtainable
+	*			- Influenced by Vigor
+	*	MaxMana: Maximum amount of Mana obtainable
+	*			- Influenced by Intelligence
 	*/		
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor, Category = "Secondary Attributes")
 	FGameplayAttributeData Armor;

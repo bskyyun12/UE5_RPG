@@ -4,10 +4,15 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AbilitySystem/MPAttributeSet.h"
 #include "AbilitySystem\MPAbilitySystemComponent.h"
+#include "MPGameplayTags.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
-	const UMPAttributeSet* MPAttributeSet = CastChecked<UMPAttributeSet>(AttributeSet);
+	const UMPAttributeSet* MPAttributeSet = Cast<UMPAttributeSet>(AttributeSet);
+	if (!ensure(MPAttributeSet))
+	{
+		return;
+	}
 
 	OnHealthChanged.Broadcast(MPAttributeSet->GetHealth());
 	OnMaxHealthChanged.Broadcast(MPAttributeSet->GetMaxHealth());
@@ -17,7 +22,7 @@ void UOverlayWidgetController::BroadcastInitialValues()
 
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
-	const UMPAttributeSet* MPAttributeSet = CastChecked<UMPAttributeSet>(AttributeSet);
+	const UMPAttributeSet* MPAttributeSet = Cast<UMPAttributeSet>(AttributeSet);
 	if (!ensure(MPAttributeSet))
 	{
 		return;
