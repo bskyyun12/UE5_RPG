@@ -5,32 +5,42 @@
 #include <AbilitySystem\MPAttributeSet.h>
 #include "AbilitySystem/Data/AttributeInfoDataAsset.h"
 #include "MPGameplayTags.h"
+#include "GameplayTagsManager.h"
 
 void UAttributeMenuWidgetController::BroadcastInitialValues()
 {
-	//UMPAttributeSet* AS = Cast<UMPAttributeSet>(AttributeSet);
-	//if (!ensure(AS))
-	//{
-	//	return;
-	//}
-
 	if (!ensureAlwaysMsgf(AttributeInfoDataAsset, TEXT("AttributeInfoDataAsset is not set in BP_AttributeMenuWidgetController.")))
 	{
 		return;
 	}
 
-	const UMPAttributeSet* AS = AbilitySystemComponent->GetSet<UMPAttributeSet>();
-	if (!ensure(AS))
+	for (FMPAttributeInfo& Info : AttributeInfoDataAsset->AttributeInformation)
 	{
-		return;
+		BroadcastAttributeInfo(Info);
 	}
-
-	FMPAttributeInfo Info = AttributeInfoDataAsset->FindAttibuteInforForTag(FMPGameplayTags::Get().Attribute_Primary_Strength);
-	Info.AttributeValue = AS->GetStrength();
-	AttributeInfoDelegate.Broadcast(Info);
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 {
+	if (!ensureAlwaysMsgf(AttributeInfoDataAsset, TEXT("AttributeInfoDataAsset is not set in BP_AttributeMenuWidgetController.")))
+	{
+		return;
+	}
 
+	for (FMPAttributeInfo& Info : AttributeInfoDataAsset->AttributeInformation)
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Info.Attribute).AddLambda(
+			[this, &Info](const FOnAttributeChangeData& Data)
+			{
+				BroadcastAttributeInfo(Info);
+			}
+		);
+	}
+
+}
+
+void UAttributeMenuWidgetController::BroadcastAttributeInfo(FMPAttributeInfo& Info) const
+{
+	Info.AttributeValue = Info.Attribute.GetNumericValue(AttributeSet);
+	AttributeInfoDelegate.Broadcast(Info);
 }

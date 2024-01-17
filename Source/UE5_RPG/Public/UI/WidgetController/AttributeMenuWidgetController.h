@@ -26,4 +26,7 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UAttributeInfoDataAsset> AttributeInfoDataAsset;
+
+private:
+	void BroadcastAttributeInfo(FMPAttributeInfo& Info) const;
 };
