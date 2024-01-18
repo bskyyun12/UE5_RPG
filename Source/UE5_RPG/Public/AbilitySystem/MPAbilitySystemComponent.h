@@ -19,8 +19,12 @@ public:
 
 	FOnAssetTagsOnEffectAppliedDelegate OnReceiveAssetTagsWhenEffectAppliedToSelf;
 
-protected:
-	UFUNCTION()
-	void OnEffectAppliedToSelf(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
+	void AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilitiesToAdd);
 
+	void AbilityInputTagHeld(const FGameplayTag& InputTag);
+	void AbilityInputTagReleased(const FGameplayTag& InputTag);
+
+protected:
+	UFUNCTION(Client, Reliable)
+	void Client_OnEffectAppliedToSelf(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
 };

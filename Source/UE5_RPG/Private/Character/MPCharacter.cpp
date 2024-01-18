@@ -57,6 +57,9 @@ void AMPCharacter::PossessedBy(AController* NewController)
 
 	// Initializing attributes on the server. Clients will get replicated values.
 	InitializeDefaultAttributes();
+
+	// Granting start abilities with given StartAbilities
+	AddStartAbilities();
 }
 
 void AMPCharacter::OnRep_PlayerState()

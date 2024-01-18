@@ -34,15 +34,15 @@ protected:
 	// AbilitySystemComponent is initially set in PlayerState(if Player controlled character) or in child classes(if AI controlled character)
 	UPROPERTY(VisibleAnywhere, Category = "MPCharacter|GAS")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
-	
+
 	// AttributeSet is initially set in PlayerState(if Player controlled character) or in child classes(if AI controlled character)
-	UPROPERTY(VisibleAnywhere,Category = "MPCharacter|GAS")
+	UPROPERTY(VisibleAnywhere, Category = "MPCharacter|GAS")
 	TObjectPtr<UAttributeSet> AttributeSet;
 
-	/* 
+	/*
 	* Each child will override this function and call UAbilitySystemComponent::InitAbilityActorInfo
 	* This must be called after possession.
-	* 1. Player controlled character, ASC lives on the Pawn 
+	* 1. Player controlled character, ASC lives on the Pawn
 	*		Server - PossessedBy
 	*		Client - AcknowledgePossession
 	* 2. Player controlled character, ASC lives on the PlayerState
@@ -50,7 +50,7 @@ protected:
 	*		Client - OnRep_PlayerState
 	* 3. AI controlled character
 	*		Server - BeginPlay
-	*		Client - BeginPlay	* 
+	*		Client - BeginPlay	*
 	* In this project, we use 2 and 3
 	*/
 	virtual void InitAbilityActorInfo();
@@ -63,15 +63,22 @@ protected:
 	*/
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "MPCharacter|GAS|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
-	
+
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "MPCharacter|GAS|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributes;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "MPCharacter|GAS|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
-	
+
 	// Applying GameplayEffect using DefaultPrimaryAttributes, DefaultSecondaryAttributes
-	void InitializeDefaultAttributes() const;	
+	void InitializeDefaultAttributes() const;
 
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, const float& Level) const;
+
+protected:
+	void AddStartAbilities();
+
+private:
+	UPROPERTY(EditAnywhere, Category = "MPCharacter|GAS|Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartAbilities;
 };

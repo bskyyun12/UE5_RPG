@@ -3,6 +3,7 @@
 
 #include "Character/MPCharacterBase.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/MPAbilitySystemComponent.h"
 
 AMPCharacterBase::AMPCharacterBase()
 {
@@ -52,6 +53,22 @@ void AMPCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClas
 	const FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(EffectClass, Level, EffectContextHandle);
 	const FGameplayEffectSpec EffectSpec = *EffectSpecHandle.Data.Get();
 	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(EffectSpec, AbilitySystemComponent);
+}
+
+void AMPCharacterBase::AddStartAbilities()
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	UMPAbilitySystemComponent* ASC = Cast<UMPAbilitySystemComponent>(AbilitySystemComponent);
+	if (!ensure(ASC))
+	{
+		return;
+	}
+
+	ASC->AddAbilities(StartAbilities);
 }
 
 UAbilitySystemComponent* AMPCharacterBase::GetAbilitySystemComponent() const
