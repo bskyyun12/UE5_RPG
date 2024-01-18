@@ -17,9 +17,6 @@ struct FMPAttributeInfo
 	FGameplayAttribute Attribute = FGameplayAttribute();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FGameplayTag AttributeTag = FGameplayTag();
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FText AttributeName = FText();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -35,10 +32,12 @@ class UE5_RPG_API UAttributeInfoDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	// Attribute widgets will receive FMPAttributeInfo data through AttributeWidgetController.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<FMPAttributeInfo> AttributeInformation;
+	TArray<FMPAttributeInfo> AttributeInfoArray;
 
 #if WITH_EDITOR
+	// Valid if Attribute is valid in AttributeInfoArray
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
 #endif
 };

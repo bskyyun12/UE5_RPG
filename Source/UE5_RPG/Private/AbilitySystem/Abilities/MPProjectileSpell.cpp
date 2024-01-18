@@ -9,39 +9,34 @@ void UMPProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if (!ensure(ProjectileClass))
-	{
-		return;
-	}
-
 	if (HasAuthority(&ActivationInfo) == false)
 	{
 		return;
 	}
 
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
-	if (CombatInterface)
+	if (!ensure(ProjectileClass))
 	{
-		FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
-
-		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(SocketLocation);
-
-		AActor* OwnerActor = GetOwningActorFromActorInfo();
-
-		APawn* Instigator = Cast<APawn>(OwnerActor);
-
-		AMPProjectile* Projectile = GetWorld()->SpawnActorDeferred<AMPProjectile>(
-			ProjectileClass,
-			SpawnTransform,
-			OwnerActor,
-			Instigator,
-			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		
-		// TODO: Before finish spawning, give the projectil a gameplay effect spec for causing damage.
-
-		Projectile->FinishSpawning(SpawnTransform);
-
+		return;
 	}
 
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	if (!ensure(CombatInterface))
+	{
+		return;
+	}
+
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(CombatInterface->GetCombatSocketLocation());
+	// TODO: Set rotation
+
+	AMPProjectile* Projectile = GetWorld()->SpawnActorDeferred<AMPProjectile>(
+		ProjectileClass,
+		SpawnTransform,
+		GetOwningActorFromActorInfo(),
+		Cast<APawn>(GetOwningActorFromActorInfo()),
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+	// TODO: Before finish spawning, give the projectil a gameplay effect spec for causing damage
+
+	Projectile->FinishSpawning(SpawnTransform);
 }

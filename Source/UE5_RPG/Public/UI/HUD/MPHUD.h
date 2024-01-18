@@ -9,6 +9,7 @@
 class UMPUserWidget;
 struct FWidgetControllerParams;
 class UOverlayWidgetController;
+class UAttributeMenuWidgetController;
 class UOverlayWidget;
 class UAbilitySystemComponent;
 class UAttributeSet;

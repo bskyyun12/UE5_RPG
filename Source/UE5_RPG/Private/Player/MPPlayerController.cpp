@@ -36,7 +36,7 @@ void AMPPlayerController::AutoRun()
 		return;
 	}
 
-	if (GetPawn())
+	if (GetPawn() && Spline)
 	{
 		const FVector LocationOnSpline = Spline->FindLocationClosestToWorldLocation(GetPawn()->GetActorLocation(), ESplineCoordinateSpace::World);
 		const FVector Direction = Spline->FindDirectionClosestToWorldLocation(GetPawn()->GetActorLocation(), ESplineCoordinateSpace::World);
@@ -134,8 +134,10 @@ void AMPPlayerController::InputReleased(FGameplayTag InputTag)
 	// LMB was meant for moving in this case
 	if (!bTargeting && InputTag == FMPGameplayTags::Get().InputTag_LMB)
 	{
+		// if it was a short click
 		if (FollowTime <= ShortPressThreshold && GetPawn())
 		{
+			// Add Spline points using Navigation's PathPoints.
 			const UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, GetPawn()->GetActorLocation(), CachedDestination);
 			if (NavPath)
 			{
@@ -145,7 +147,7 @@ void AMPPlayerController::InputReleased(FGameplayTag InputTag)
 					Spline->AddSplinePoint(Point, ESplineCoordinateSpace::World);
 				}
 				CachedDestination = NavPath->PathPoints.Last(); // Last path point is our new destination.
-				bAutoRunning = true;
+				bAutoRunning = true; // Tick will now use the spline data to move character to CachedDestination.
 			}
 		}
 		FollowTime = 0.f;
@@ -171,7 +173,7 @@ void AMPPlayerController::InputHeld(const FInputActionValue& InputActionValue, F
 	// LMB was meant for moving in this case
 	if (!bTargeting && InputTag == FMPGameplayTags::Get().InputTag_LMB)
 	{
-
+		// Used in InputReleased to see if it was a quick click
 		FollowTime += GetWorld()->GetDeltaSeconds();
 
 		if (CursorHit.bBlockingHit)
@@ -185,19 +187,17 @@ void AMPPlayerController::InputHeld(const FInputActionValue& InputActionValue, F
 			GetPawn()->AddMovementInput(WorldDirection);
 		}
 	}
-	else if (GetASC())
-	{
-		GetASC()->AbilityInputTagHeld(InputTag);
-		return;
-	}
 
-
+	// TODO: Remove WASD movement and use only LMB to move
 	if (InputTag == FMPGameplayTags::Get().InputTag_Move)
 	{
-		if (ThisActor == nullptr)
-		{
-			Move(InputActionValue);
-		}
+		Move(InputActionValue);
+	}
+
+	// Try using ability
+	if (GetASC())
+	{
+		GetASC()->AbilityInputTagHeld(InputTag);
 	}
 }
 

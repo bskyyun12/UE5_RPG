@@ -21,5 +21,4 @@ public:
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="MPAbilitySystemLibrary|WidgetController")
 	static UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const UObject* WorldContextObject);
-
 };

@@ -9,19 +9,21 @@ void UMPAbilitySystemComponent::OnInitAbilityActorInfo()
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &ThisClass::Client_OnEffectAppliedToSelf);
 }
 
-void UMPAbilitySystemComponent::AddAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilitiesToAdd)
+void UMPAbilitySystemComponent::AddAbility(const TSubclassOf<UGameplayAbility>& AbilityToAdd)
 {
-	for (const TSubclassOf<UGameplayAbility>& AbilityClass : AbilitiesToAdd)
+	FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityToAdd, 1);
+	const UMPGameplayAbility* MPAbility = Cast<UMPGameplayAbility>(AbilitySpec.Ability);
+	if (!ensure(MPAbility)) // We always want to use MPGameplayAbility
 	{
-		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
-		const UMPGameplayAbility* MPAbility = Cast<UMPGameplayAbility>(AbilitySpec.Ability);
-		if (!ensure(MPAbility)) // We always want to use MPGameplayAbility
-		{
-			return;
-		}
-		AbilitySpec.DynamicAbilityTags.AddTag(MPAbility->StartupInputTag);
-		GiveAbility(AbilitySpec);
+		return;
 	}
+	/*
+	* TODO: Implement Swapping, removing tags so player can freely switch skills in skill slots.
+	* The idea here is to change DynamicAbilityTags in runtime. DynamicAbilityTags is responsible for activating abilities.
+	* So, we will re-assign a new InputTag for the ability.
+	*/
+	AbilitySpec.DynamicAbilityTags.AddTag(MPAbility->StartupInputTag);
+	GiveAbility(AbilitySpec);
 }
 
 void UMPAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)

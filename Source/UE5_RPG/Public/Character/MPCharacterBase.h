@@ -50,13 +50,12 @@ protected:
 	* 1. Player controlled character, ASC lives on the Pawn
 	*		Server - PossessedBy
 	*		Client - AcknowledgePossession
-	* 2. Player controlled character, ASC lives on the PlayerState
+	* 2. Player controlled character, ASC lives on the PlayerState (Our case)
 	*		Server - PossessedBy
 	*		Client - OnRep_PlayerState
-	* 3. AI controlled character
+	* 3. AI controlled character (Our case)
 	*		Server - BeginPlay
-	*		Client - BeginPlay	*
-	* In this project, we use 2 and 3
+	*		Client - BeginPlay
 	*/
 	virtual void InitAbilityActorInfo();
 
@@ -75,15 +74,15 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "MPCharacter|GAS|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
 
-	// Applying GameplayEffect using DefaultPrimaryAttributes, DefaultSecondaryAttributes
+	// Applying GameplayEffect using DefaultPrimaryAttributes, DefaultSecondaryAttributes, DefaultVitalAttributes
 	void InitializeDefaultAttributes() const;
 
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, const float& Level) const;
 
-protected:
-	void AddStartAbilities();
+	void AddStartAbilities() const;
 
 private:
+	// Abilities that this character should have initially.
 	UPROPERTY(EditAnywhere, Category = "MPCharacter|GAS|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartAbilities;
 };

@@ -73,6 +73,7 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 			{
 				// For example, say that Tag = Message.HealthPotion				
 				// FGameplayTag::MatchesTag => "Message.HealthPotion".MatchesTag("Message") will return True, "Message".MatchesTag("Message.HealthPotion") will return False
+				// TODO: Get the gameplay tag from MPGamePlayTags. Need to find a way to get all tags which have "Message"..
 				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
 				if (Tag.MatchesTag(MessageTag))
 				{

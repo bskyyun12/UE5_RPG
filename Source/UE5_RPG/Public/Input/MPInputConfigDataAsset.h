@@ -27,12 +27,14 @@ class UE5_RPG_API UMPInputConfigDataAsset : public UDataAsset
 	GENERATED_BODY()
 	
 public:
-	const UInputAction* FindAbilityInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound = false) const;
-
+	/*
+	* Mapping UInputAction and FGameplayTag(InputTag). 
+	*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FMPInputAction> AbilityInputActions;
 
 #if WITH_EDITOR
+	// Valid if InputAction and InputTag are valid in AbilityInputActions
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
 #endif
 

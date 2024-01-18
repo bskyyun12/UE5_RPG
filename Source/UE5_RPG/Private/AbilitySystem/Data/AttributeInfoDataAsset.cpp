@@ -9,18 +9,11 @@
 EDataValidationResult UAttributeInfoDataAsset::IsDataValid(FDataValidationContext& Context) const
 {
 	EDataValidationResult Result = EDataValidationResult::Valid;
-	for (int i = 0; i < AttributeInformation.Num(); i++)
+	for (int i = 0; i < AttributeInfoArray.Num(); i++)
 	{
-		if (AttributeInformation[i].Attribute.IsValid() == false)
+		if (AttributeInfoArray[i].Attribute.IsValid() == false)
 		{
 			const FText ErrorMsg = FText::FromString(FString::Printf(TEXT("Attribute at index [%i] should be valid!"), i));
-			Context.AddError(ErrorMsg);
-			Result = EDataValidationResult::Invalid;
-		}
-
-		if (AttributeInformation[i].AttributeTag.IsValid() == false)
-		{
-			const FText ErrorMsg = FText::FromString(FString::Printf(TEXT("AttributeTag at index [%i] should be valid!"), i));
 			Context.AddError(ErrorMsg);
 			Result = EDataValidationResult::Invalid;
 		}

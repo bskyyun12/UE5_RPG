@@ -14,7 +14,7 @@ void UAttributeMenuWidgetController::BroadcastInitialValues()
 		return;
 	}
 
-	for (FMPAttributeInfo& Info : AttributeInfoDataAsset->AttributeInformation)
+	for (FMPAttributeInfo& Info : AttributeInfoDataAsset->AttributeInfoArray)
 	{
 		BroadcastAttributeInfo(Info);
 	}
@@ -27,7 +27,7 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 		return;
 	}
 
-	for (FMPAttributeInfo& Info : AttributeInfoDataAsset->AttributeInformation)
+	for (FMPAttributeInfo& Info : AttributeInfoDataAsset->AttributeInfoArray)
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Info.Attribute).AddLambda(
 			[this, &Info](const FOnAttributeChangeData& Data)
@@ -36,7 +36,6 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 			}
 		);
 	}
-
 }
 
 void UAttributeMenuWidgetController::BroadcastAttributeInfo(FMPAttributeInfo& Info) const

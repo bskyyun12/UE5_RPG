@@ -14,7 +14,7 @@ class UE5_RPG_API UMPEnhancedInputComponent : public UEnhancedInputComponent
 
 public:
 	/*
-	* Custom Binding function to include FGameplayTag
+	* Custom Binding function to include InputTag. (We activate abilities if their DynamicInputTags contain given InputTag)
 	*/
 	template<class UserClass, typename FuncType_Pressed, typename FuncType_Released, typename FuncType_Held>
 	void BindInputActions(const UMPInputConfigDataAsset* InputConfig, UserClass* Object, FuncType_Pressed PressedFunc, FuncType_Released ReleasedFunc, FuncType_Held HeldFunc);

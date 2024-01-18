@@ -55,20 +55,23 @@ void AMPCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClas
 	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(EffectSpec, AbilitySystemComponent);
 }
 
-void AMPCharacterBase::AddStartAbilities()
+void AMPCharacterBase::AddStartAbilities() const
 {
-	if (!HasAuthority())
+	for (const TSubclassOf<UGameplayAbility>& StartAbility : StartAbilities)
 	{
-		return;
-	}
+		if (!HasAuthority())
+		{
+			return;
+		}
 
-	UMPAbilitySystemComponent* ASC = Cast<UMPAbilitySystemComponent>(AbilitySystemComponent);
-	if (!ensure(ASC))
-	{
-		return;
-	}
+		UMPAbilitySystemComponent* MPAbilitySystemComponent = Cast<UMPAbilitySystemComponent>(AbilitySystemComponent);
+		if (!ensure(MPAbilitySystemComponent))
+		{
+			return;
+		}
 
-	ASC->AddAbilities(StartAbilities);
+		MPAbilitySystemComponent->AddAbility(StartAbility);
+	}
 }
 
 UAbilitySystemComponent* AMPCharacterBase::GetAbilitySystemComponent() const
