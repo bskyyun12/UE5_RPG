@@ -75,3 +75,8 @@ UAbilitySystemComponent* AMPCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
 }
+
+FVector AMPCharacterBase::GetCombatSocketLocation()
+{
+	return Weapon ? Weapon->GetSocketLocation(WeaponTipSocketName) : FVector();
+}

@@ -31,6 +31,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "MPCharacter|Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
+	UPROPERTY(EditAnywhere, Category = "MPCharacter|Combat")
+	FName WeaponTipSocketName = FName("TipSocket");
+
+	virtual FVector GetCombatSocketLocation() override;
+
 	// AbilitySystemComponent is initially set in PlayerState(if Player controlled character) or in child classes(if AI controlled character)
 	UPROPERTY(VisibleAnywhere, Category = "MPCharacter|GAS")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
