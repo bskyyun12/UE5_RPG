@@ -25,4 +25,5 @@ public:
 	virtual int32 GetPlayerLevel();
 
 	virtual FVector GetCombatSocketLocation() = 0;	
+	virtual TObjectPtr<USkeletalMeshComponent> GetWeapon() = 0;	
 };

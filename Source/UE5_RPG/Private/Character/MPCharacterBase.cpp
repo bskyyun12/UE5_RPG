@@ -83,3 +83,8 @@ FVector AMPCharacterBase::GetCombatSocketLocation()
 {
 	return Weapon ? Weapon->GetSocketLocation(WeaponTipSocketName) : FVector();
 }
+
+TObjectPtr<USkeletalMeshComponent> AMPCharacterBase::GetWeapon()
+{
+	return Weapon;
+}

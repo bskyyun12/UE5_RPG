@@ -26,6 +26,11 @@ struct FMPAttributeInfo
 	float AttributeValue = 0.f;
 };
 
+/*
+* UAttributeInfoDataAsset
+* Contains data for widgets to receive through its widget controller
+* The widget controller broadcasts attribute changes to widgets.
+*/
 UCLASS()
 class UE5_RPG_API UAttributeInfoDataAsset : public UDataAsset
 {
