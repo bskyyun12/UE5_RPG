@@ -37,12 +37,12 @@ void AMPCharacterBase::InitializeDefaultAttributes() const
 }
 
 void AMPCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, const float& Level) const
-{	
+{
 	if (!ensure(AbilitySystemComponent))
 	{
 		return;
 	}
-		
+
 	if (!ensure(EffectClass))
 	{
 		return;
@@ -87,4 +87,59 @@ FVector AMPCharacterBase::GetCombatSocketLocation()
 TObjectPtr<USkeletalMeshComponent> AMPCharacterBase::GetWeapon()
 {
 	return Weapon;
+}
+
+void AMPCharacterBase::OnPossess(ACharacter* TargetCharacter)
+{
+	// TODO: Change to Rep_Notify or handle it in GameplayAbility
+	Multicast_OnPossess(TargetCharacter);
+}
+
+void AMPCharacterBase::Multicast_OnPossess_Implementation(ACharacter* TargetCharacter)
+{
+	if (!ensure(TargetCharacter))
+	{
+		return;
+	}
+
+	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetCharacter);
+	if (!ensure(TargetCombatInterface))
+	{
+		return;
+	}
+
+	GetMesh()->SetSkeletalMesh(TargetCharacter->GetMesh()->GetSkeletalMeshAsset());
+	GetMesh()->SetAnimClass(TargetCharacter->GetMesh()->GetAnimClass());
+	GetWeapon()->SetSkeletalMesh(TargetCombatInterface->GetWeapon()->GetSkeletalMeshAsset());
+	// TODO: Set movement speed
+
+
+	/*
+	* TODO: Overwrite current abilities or add a new one?
+	* Maybe one of the ability slot is only for abilities that you can get from enemies??
+	* Or you can keep one of the abilities and overwrite all the other abilities??
+	* 
+	* For now, Main character has 1 ability and the enemy has 1 ability. So I'm just adding target enemy's ability
+	*/
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	AMPCharacterBase* MPCharacterBase = Cast<AMPCharacterBase>(TargetCharacter);
+	if (!ensure(MPCharacterBase))
+	{
+		return;
+	}
+
+	for (TSubclassOf<UGameplayAbility>& Ability : MPCharacterBase->StartAbilities)
+	{
+		UMPAbilitySystemComponent* MPAbilitySystemComponent = Cast<UMPAbilitySystemComponent>(AbilitySystemComponent);
+		if (!ensure(MPAbilitySystemComponent))
+		{
+			return;
+		}
+
+		MPAbilitySystemComponent->AddAbility(Ability);
+	}
 }

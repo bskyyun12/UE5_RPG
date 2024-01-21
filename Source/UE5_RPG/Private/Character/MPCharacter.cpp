@@ -101,10 +101,10 @@ void AMPCharacter::InitAbilityActorInfo()
 
 	// HUD setup - Initialize Overlay widget
 	AMPPlayerController* MPPlayerController = Cast<AMPPlayerController>(GetController());
-	if (ensureAlways(MPPlayerController))
+	if (MPPlayerController)
 	{
 		AMPHUD* MPHUD = MPPlayerController->GetHUD<AMPHUD>();
-		if (ensureAlways(MPHUD))
+		if (MPHUD)
 		{
 			MPHUD->CreateAndInitOverlayWidget(MPPlayerController, MPPlayerState, AbilitySystemComponent, AttributeSet);
 		}

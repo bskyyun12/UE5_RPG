@@ -9,29 +9,25 @@ void UPossessSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if (HasAuthority(&ActivationInfo) == false)
-	{
-		return;
-	}
+}
 
+void UPossessSpell::Possess(AActor* TargetActor)
+{
+	AMPCharacterBase* TargetCharacter = Cast<AMPCharacterBase>(TargetActor);
+	AMPCharacterBase* AvatarCharacter = Cast<AMPCharacterBase>(GetAvatarActorFromActorInfo());
 	ICombatInterface* AvatarCombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
-	if (!ensure(AvatarCombatInterface))
-	{
-		return;
-	}
-	
-	// TODO: Don't spawn it. Get target class
-	AMPCharacterBase* Character = Cast<AMPCharacterBase>(GetAvatarActorFromActorInfo());
-	AMPEnemy* Enemy = GetWorld()->SpawnActor<AMPEnemy>(EnemyClassToPossess);	
-	ICombatInterface* EnemyCombatInterface = Cast<ICombatInterface>(Enemy);
-	if (!ensure(EnemyCombatInterface))
+	if (!ensure(TargetCharacter) || 
+		!ensure(AvatarCharacter) ||
+		!ensure(AvatarCombatInterface))
 	{
 		return;
 	}
 
-	Character->GetMesh()->SetSkeletalMesh(Enemy->GetMesh()->GetSkeletalMeshAsset());
-	Character->GetMesh()->SetAnimClass(Enemy->GetMesh()->GetAnimClass());
-	AvatarCombatInterface->GetWeapon()->SetSkeletalMesh(EnemyCombatInterface->GetWeapon()->GetSkeletalMeshAsset());
-	// TODO: Set movement speed
-	// TODO: Remove Character's abilities and Take Enemy's abilities
+	const bool bIsServer = AvatarCharacter->HasAuthority();
+	if (bIsServer == false)
+	{
+		return;
+	}
+
+	AvatarCombatInterface->OnPossess(TargetCharacter);
 }

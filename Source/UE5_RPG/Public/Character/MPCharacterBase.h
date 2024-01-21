@@ -35,8 +35,13 @@ protected:
 	FName WeaponTipSocketName = FName("TipSocket");
 	
 	// Inherited via IAbilitySystemInterface
-	virtual FVector GetCombatSocketLocation() override;
+	virtual FVector GetCombatSocketLocation() override; // returns socket location using WeaponTipSocketName. (example case: Projectile's spawn location)
 	virtual TObjectPtr<USkeletalMeshComponent> GetWeapon() override;
+	virtual void OnPossess(ACharacter* TargetCharacter) override; // TODO: Handle everything in 
+	
+	// TODO: Change to Rep_Notify
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_OnPossess(ACharacter* TargetCharacter);
 
 	// AbilitySystemComponent is initially set in PlayerState(if Player controlled character) or in child classes(if AI controlled character)
 	UPROPERTY(VisibleAnywhere, Category = "MPCharacter|GAS")

@@ -9,7 +9,26 @@ void UMPProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if (HasAuthority(&ActivationInfo) == false)
+}
+
+void UMPProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
+{
+	/*
+	* If player-controlled
+	*	GetOwningActorFromActorInfo() = PlayerState
+	*	GetAvatarActorFromActorInfo() = Pawn
+	* If AI-controlled
+	*	GetOwningActorFromActorInfo() = Pawn
+	*	GetAvatarActorFromActorInfo() = Pawn
+	*/
+	AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	if (!ensure(AvatarActor))
+	{
+		return;
+	}
+
+	const bool bIsServer = AvatarActor->HasAuthority();
+	if (bIsServer == false)
 	{
 		return;
 	}
@@ -19,24 +38,27 @@ void UMPProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		return;
 	}
 
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor);
 	if (!ensure(CombatInterface))
 	{
 		return;
 	}
 
-	FTransform SpawnTransform;
-	SpawnTransform.SetLocation(CombatInterface->GetCombatSocketLocation());
-	// TODO: Set rotation
+	// Set SpawnTransform
+	const FVector SpawnLocation = CombatInterface->GetCombatSocketLocation();
+	FRotator SpawnRotation = (TargetLocation - SpawnLocation).Rotation();
+	SpawnRotation.Pitch = 0.f;
+	const FTransform SpawnTransform(SpawnRotation.Quaternion(), SpawnLocation);
 
+	// Spawn Projectile
 	AMPProjectile* Projectile = GetWorld()->SpawnActorDeferred<AMPProjectile>(
 		ProjectileClass,
 		SpawnTransform,
-		GetOwningActorFromActorInfo(),
-		Cast<APawn>(GetOwningActorFromActorInfo()),
+		AvatarActor,
+		Cast<APawn>(AvatarActor),
 		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-	// TODO: Before finish spawning, give the projectil a gameplay effect spec for causing damage
+	// TODO: Before FinishSpawning, give the projectil a gameplay effect spec for causing damage
 
 	Projectile->FinishSpawning(SpawnTransform);
 }

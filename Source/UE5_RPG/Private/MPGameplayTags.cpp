@@ -59,8 +59,6 @@ void FMPGameplayTags::InitializeNativeGameplayTags()
 		= UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Message.Gold"), FString(""));
 
 	// Input Tags
-	GameplayTags.InputTag_Move
-		= UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Move"), FString("Input tag for Move action (WASD)"));
 	GameplayTags.InputTag_LMB
 		= UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.LMB"), FString("Input tag for Left Mouse Button"));
 	GameplayTags.InputTag_RMB
@@ -73,4 +71,10 @@ void FMPGameplayTags::InitializeNativeGameplayTags()
 		= UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.3"), FString("Input tag for 3 Key"));
 	GameplayTags.InputTag_4
 		= UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.4"), FString("Input tag for 4 Key"));
+
+	// Event Tags
+	GameplayTags.Event_Montage_FireBolt
+		= UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Event.Montage.FireBolt"), FString(""));	
+	GameplayTags.Event_Montage_Slingshot_Stone
+		= UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Event.Montage.Slingshot.Stone"), FString(""));
 }

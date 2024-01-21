@@ -84,7 +84,7 @@ void AMPPlayerController::BeginPlay()
 	}
 
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	if (ensure(Subsystem))
+	if (Subsystem)
 	{
 		Subsystem->AddMappingContext(MPContext, 0);
 	}
@@ -187,15 +187,7 @@ void AMPPlayerController::InputHeld(const FInputActionValue& InputActionValue, F
 			GetPawn()->AddMovementInput(WorldDirection);
 		}
 	}
-
-	// TODO: Remove WASD movement and use only LMB to move
-	if (InputTag == FMPGameplayTags::Get().InputTag_Move)
-	{
-		Move(InputActionValue);
-	}
-
-	// Try using ability
-	if (GetASC())
+	else if (GetASC())
 	{
 		GetASC()->AbilityInputTagHeld(InputTag);
 	}

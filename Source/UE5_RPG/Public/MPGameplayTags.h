@@ -44,13 +44,16 @@ public:
 	FGameplayTag Message_Gold;	
 
 	// Input Tags
-	FGameplayTag InputTag_Move;
 	FGameplayTag InputTag_LMB;
 	FGameplayTag InputTag_RMB;
 	FGameplayTag InputTag_1;
 	FGameplayTag InputTag_2;
 	FGameplayTag InputTag_3;
 	FGameplayTag InputTag_4;
+	
+	// Event Tags
+	FGameplayTag Event_Montage_FireBolt;
+	FGameplayTag Event_Montage_Slingshot_Stone;
 
 private:
 	static FMPGameplayTags GameplayTags;

@@ -3,6 +3,7 @@
 
 #include "MPAssetManager.h"
 #include "MPGameplayTags.h"
+#include "AbilitySystemGlobals.h"
 
 UMPAssetManager& UMPAssetManager::Get()
 {
@@ -16,4 +17,7 @@ void UMPAssetManager::StartInitialLoading()
 	Super::StartInitialLoading();
 
 	FMPGameplayTags::InitializeNativeGameplayTags();
+
+	// This is required to use GameplayAbilityTargetData
+	UAbilitySystemGlobals::Get().InitGlobalData();
 }
