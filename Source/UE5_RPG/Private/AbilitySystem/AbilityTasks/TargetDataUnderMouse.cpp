@@ -78,6 +78,7 @@ void UTargetDataUnderMouse::SendTargetData()
 
 void UTargetDataUnderMouse::OnTargetDataReplicatedCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FGameplayTag ActivationTag)
 {
+	// Find CachedData(FAbilityReplicatedDataCache) and reset
 	AbilitySystemComponent->ConsumeClientReplicatedTargetData(GetAbilitySpecHandle(), GetActivationPredictionKey());
 	
 	if (ShouldBroadcastAbilityTaskDelegates())
