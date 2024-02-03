@@ -7,6 +7,7 @@
 #include "MPProjectileSpell.generated.h"
 
 class AMPProjectile;
+class UGameplayEffect;
 
 UCLASS()
 class UE5_RPG_API UMPProjectileSpell : public UMPGameplayAbility
@@ -25,4 +26,7 @@ protected:
 	/** Projectile to spawn on ActivateAbility */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AMPProjectile> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
 };

@@ -54,6 +54,7 @@ void AMPEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	InitAbilityActorInfo();
+	InitializeDefaultAttributes();
 }
 
 void AMPEnemy::InitAbilityActorInfo()

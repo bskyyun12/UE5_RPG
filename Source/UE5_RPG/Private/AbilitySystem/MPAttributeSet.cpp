@@ -61,6 +61,8 @@ void UMPAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 	FEffectProperties Props;
 	SetEffectProperties(Data, Props);
 
+	UE_LOG(LogTemp, Warning, TEXT("UMPAttributeSet::PostGameplayEffectExecute => [%s] changed on [%s]. New value: [%f]"), *Data.EvaluatedData.Attribute.GetName(), *Props.TargetAvatarActor->GetName(), Data.EvaluatedData.Attribute.GetNumericValue(this));
+	
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));

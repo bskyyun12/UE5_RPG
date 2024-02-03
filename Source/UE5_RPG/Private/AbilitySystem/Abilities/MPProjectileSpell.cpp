@@ -4,6 +4,8 @@
 #include "AbilitySystem/Abilities/MPProjectileSpell.h"
 #include "Actor/MPProjectile.h"
 #include "Interaction/CombatInterface.h"
+#include <AbilitySystemBlueprintLibrary.h>
+#include "AbilitySystemComponent.h"
 
 void UMPProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -58,7 +60,14 @@ void UMPProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 		Cast<APawn>(AvatarActor),
 		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-	// TODO: Before FinishSpawning, give the projectil a gameplay effect spec for causing damage
+	// Set Projectile's DamageEffectSpecHandle using DamageEffectClass before finish spawning
+	const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(AvatarActor);
+	if (!ensure(SourceASC))
+	{
+		return;
+	}
+	const FGameplayEffectSpecHandle DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+	Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
 
 	Projectile->FinishSpawning(SpawnTransform);
 }

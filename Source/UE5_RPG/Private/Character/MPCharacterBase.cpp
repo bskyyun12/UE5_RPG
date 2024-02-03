@@ -4,10 +4,18 @@
 #include "Character/MPCharacterBase.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/MPAbilitySystemComponent.h"
+#include "UE5_RPG\UE5_RPG.h"
+#include "Components\CapsuleComponent.h"
 
 AMPCharacterBase::AMPCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	// We want only mesh to generate overlap events.
+	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
+
+	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
+	GetMesh()->SetGenerateOverlapEvents(true);
 
 	// Weapon attachment setup. WeaponHandSocket should be added in the skeleton
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");

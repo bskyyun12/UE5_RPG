@@ -2,11 +2,14 @@
 
 
 #include "Actor/MPProjectile.h"
+#include "UE5_RPG\UE5_RPG.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Components/AudioComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 
 AMPProjectile::AMPProjectile()
 {
@@ -15,6 +18,7 @@ AMPProjectile::AMPProjectile()
 
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	SetRootComponent(Sphere);
+	Sphere->SetCollisionObjectType(ECC_Projectile);
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Sphere->SetCollisionResponseToAllChannels(ECR_Overlap);
 	Sphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
@@ -32,6 +36,7 @@ void AMPProjectile::BeginPlay()
 	Super::BeginPlay();
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnSphereOverlap);
 	FlyingAudioComp = UGameplayStatics::SpawnSoundAttached(FlyingSound, RootComponent);
+	FlyingAudioComp->bStopWhenOwnerDestroyed = true;
 	SetLifeSpan(LifeSpan);
 }
 
@@ -42,6 +47,7 @@ void AMPProjectile::Destroyed()
 	{
 		PlayHitEffect();
 	}
+
 	Super::Destroyed();
 }
 
@@ -50,6 +56,13 @@ void AMPProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	// Server play effects and Destroy. Clients will play effects in Destroyed()
 	if (HasAuthority())
 	{
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
+		if (TargetASC && DamageEffectSpecHandle.IsValid())
+		{
+			FGameplayEffectSpec* DamageEffectSpec = DamageEffectSpecHandle.Data.Get();
+			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpec);
+		}
+
 		PlayHitEffect();
 		Destroy();
 	}
@@ -59,9 +72,5 @@ void AMPProjectile::PlayHitEffect()
 {
 	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-	if (FlyingAudioComp)
-	{
-		FlyingAudioComp->Stop();
-	}
 }
 
