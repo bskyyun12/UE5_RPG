@@ -4,7 +4,7 @@
 #include "UI/Widget/MPUserWidget.h"
 #include "UI/WidgetController/MPWidgetController.h"
 
-void UMPUserWidget::SetWidgetController(UMPWidgetController* InWidgetController)
+void UMPUserWidget::SetWidgetController(UObject* InWidgetController)
 {
 	if (!ensureAlwaysMsgf(InWidgetController, TEXT("We always want to set a valid widget controller for MPUserWidget.")))
 	{
@@ -14,6 +14,11 @@ void UMPUserWidget::SetWidgetController(UMPWidgetController* InWidgetController)
 	WidgetController = InWidgetController;
 	BP_OnSetWidgetController();
 
-	// Blueprints will bind delegates when BP_OnSetWidgetController is triggered. Then we can broadcast delegates.
-	WidgetController->BroadcastInitialValues();
+	UMPWidgetController* MPWidgetController = Cast<UMPWidgetController>(WidgetController);
+	if (MPWidgetController)
+	{
+		// Blueprints will bind delegates when BP_OnSetWidgetController is triggered. Then we can broadcast delegates.
+		MPWidgetController->BroadcastInitialValues();
+	}
+
 }

@@ -5,6 +5,8 @@
 #include "UE5_RPG/UE5_RPG.h"
 #include "AbilitySystem/MPAbilitySystemComponent.h"
 #include "AbilitySystem/MPAttributeSet.h"
+#include "Components/WidgetComponent.h"
+#include "UI/Widget/MPUserWidget.h"
 
 AMPEnemy::AMPEnemy()
 {
@@ -28,6 +30,9 @@ AMPEnemy::AMPEnemy()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	AttributeSet = CreateDefaultSubobject<UMPAttributeSet>("AttributeSet");
+
+	HealthBarWidgetComp = CreateDefaultSubobject<UWidgetComponent>("HealthBarWidgetComp");
+	HealthBarWidgetComp->SetupAttachment(GetRootComponent());
 }
 
 void AMPEnemy::HighlightActor()
@@ -55,6 +60,7 @@ void AMPEnemy::BeginPlay()
 
 	InitAbilityActorInfo();
 	InitializeDefaultAttributes();
+	InitHealthBar();
 }
 
 void AMPEnemy::InitAbilityActorInfo()
@@ -71,4 +77,34 @@ void AMPEnemy::InitAbilityActorInfo()
 		return;
 	}
 	MPAbilitySystemComponent->OnInitAbilityActorInfo();
+}
+
+void AMPEnemy::InitHealthBar()
+{
+	// Set WidgetController
+	UMPUserWidget* HealthBarWidget = Cast<UMPUserWidget>(HealthBarWidgetComp->GetUserWidgetObject());
+	if (!ensure(HealthBarWidget))
+	{
+		return;
+	}
+	HealthBarWidget->SetWidgetController(this);
+
+	// Bind health callbacks
+	const UMPAttributeSet* MPAS = Cast<UMPAttributeSet>(AttributeSet);
+	if (!ensure(MPAS))
+	{
+		return;
+	}
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MPAS->GetHealthAttribute()).AddLambda(
+		[this](const FOnAttributeChangeData& Data) {
+			OnHealthChanged.Broadcast(Data.NewValue);
+		});
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MPAS->GetMaxHealthAttribute()).AddLambda(
+		[this](const FOnAttributeChangeData& Data) {
+			OnMaxHealthChanged.Broadcast(Data.NewValue);
+		});
+
+	// Broadcast initial health values
+	OnHealthChanged.Broadcast(MPAS->GetHealth());
+	OnMaxHealthChanged.Broadcast(MPAS->GetMaxHealth());
 }
