@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Data/CharacterClassInfoDataAsset.h"
 #include "MPAbilitySystemLibrary.generated.h"
 
 class UOverlayWidgetController;
 class UAttributeMenuWidgetController;
 class AMPHUD;
+class UAbilitySystemComponent;
 
 UCLASS()
 class UE5_RPG_API UMPAbilitySystemLibrary : public UBlueprintFunctionLibrary
@@ -21,4 +23,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="MPAbilitySystemLibrary|WidgetController")
 	static UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, Category="MPAbilitySystemLibrary|CharacterClassDefaults")
+	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC);
 };

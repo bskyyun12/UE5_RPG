@@ -6,12 +6,14 @@
 #include "GameFramework/GameModeBase.h"
 #include "MPGameModeBase.generated.h"
 
-/**
- * 
- */
+class UCharacterClassInfoDataAsset;
+
 UCLASS()
 class UE5_RPG_API AMPGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category="Character Class Defaults")
+	TObjectPtr<UCharacterClassInfoDataAsset> CharacterInfoDataAsset;
 };

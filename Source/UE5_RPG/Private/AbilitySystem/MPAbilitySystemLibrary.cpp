@@ -6,6 +6,9 @@
 #include "UI/HUD/MPHUD.h"
 #include "Player/MPPlayerState.h"
 #include "UI/WidgetController/MPWidgetController.h"
+#include "Game/MPGameModeBase.h"
+#include "AbilitySystem/Data/CharacterClassInfoDataAsset.h"
+#include "AbilitySystemComponent.h"
 
 UOverlayWidgetController* UMPAbilitySystemLibrary::GetOverlayWidgetController(const UObject* WorldContextObject)
 {
@@ -65,4 +68,38 @@ UAttributeMenuWidgetController* UMPAbilitySystemLibrary::GetAttributeMenuWidgetC
 
 	const FWidgetControllerParams WidgetControllerParams(PC, PS, ASC, AS);
 	return MPHUD->CreateOrGetAttributeMenuWidgetController(WidgetControllerParams);
+}
+
+void UMPAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC)
+{
+	if (!ensure(ASC))
+	{
+		return;
+	}
+
+	const AMPGameModeBase* MPGM = Cast<AMPGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (!ensure(MPGM))
+	{
+		return;
+	}
+
+	UCharacterClassInfoDataAsset* CharacterClassInfoDataAsset = MPGM->CharacterInfoDataAsset;
+	if (!ensure(CharacterClassInfoDataAsset))
+	{
+		return;
+	}
+
+	const FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfoDataAsset->GetClassDefaultInfo(CharacterClass);
+	
+	FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
+	ContextHandle.AddSourceObject(ASC->GetAvatarActor());
+
+	const FGameplayEffectSpecHandle PrimaryAttributesSpecHandle = ASC->MakeOutgoingSpec(ClassDefaultInfo.PrimaryAttributes, Level, ContextHandle);
+	ASC->ApplyGameplayEffectSpecToSelf(*PrimaryAttributesSpecHandle.Data.Get());
+
+	FGameplayEffectSpecHandle SecondaryAttributesSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfoDataAsset->SecondaryAttributes, Level, ContextHandle);
+	ASC->ApplyGameplayEffectSpecToSelf(*SecondaryAttributesSpecHandle.Data.Get());
+
+	FGameplayEffectSpecHandle VitalAttributesSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfoDataAsset->VitalAttributes, Level, ContextHandle);
+	ASC->ApplyGameplayEffectSpecToSelf(*VitalAttributesSpecHandle.Data.Get());
 }

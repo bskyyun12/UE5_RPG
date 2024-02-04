@@ -7,6 +7,7 @@
 #include "AbilitySystem/MPAttributeSet.h"
 #include "Components/WidgetComponent.h"
 #include "UI/Widget/MPUserWidget.h"
+#include "AbilitySystem/MPAbilitySystemLibrary.h"
 
 AMPEnemy::AMPEnemy()
 {
@@ -77,6 +78,11 @@ void AMPEnemy::InitAbilityActorInfo()
 		return;
 	}
 	MPAbilitySystemComponent->OnInitAbilityActorInfo();
+}
+
+void AMPEnemy::InitializeDefaultAttributes() const
+{
+	UMPAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
 }
 
 void AMPEnemy::InitHealthBar()

@@ -6,6 +6,7 @@
 #include "Character/MPCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
+#include "AbilitySystem\Data\CharacterClassInfoDataAsset.h"
 #include "MPEnemy.generated.h"
 
 class UWidgetComponent;
@@ -36,12 +37,16 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+	virtual void InitializeDefaultAttributes() const override;
 	
 	UPROPERTY(EditAnywhere, Category = "MPEnemy|Combat")
 	TObjectPtr<UWidgetComponent> HealthBarWidgetComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MPEnemy|Class Defaults")
 	int32 Level = 1;
+		
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MPEnemy|Class Defaults")
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 
 private:
 	void InitHealthBar();
