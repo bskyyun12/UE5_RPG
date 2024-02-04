@@ -78,7 +78,7 @@ void UMPAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldCo
 	}
 
 	const AMPGameModeBase* MPGM = Cast<AMPGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (!ensure(MPGM))
+	if (!MPGM)
 	{
 		return;
 	}

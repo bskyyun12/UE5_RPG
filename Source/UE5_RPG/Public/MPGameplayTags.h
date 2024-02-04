@@ -54,6 +54,9 @@ public:
 	// Event Tags
 	FGameplayTag Event_Montage_FireBolt;
 	FGameplayTag Event_Montage_Slingshot_Stone;
+		
+	//
+	FGameplayTag Damage;
 
 private:
 	static FMPGameplayTags GameplayTags;

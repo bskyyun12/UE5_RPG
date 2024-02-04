@@ -77,4 +77,9 @@ void FMPGameplayTags::InitializeNativeGameplayTags()
 		= UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Event.Montage.FireBolt"), FString(""));	
 	GameplayTags.Event_Montage_Slingshot_Stone
 		= UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Event.Montage.Slingshot.Stone"), FString(""));
+
+	//
+	GameplayTags.Damage
+		= UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage"), FString(""));	
+	
 }

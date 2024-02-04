@@ -6,6 +6,7 @@
 #include "Interaction/CombatInterface.h"
 #include <AbilitySystemBlueprintLibrary.h>
 #include "AbilitySystemComponent.h"
+#include "MPGameplayTags.h"
 
 void UMPProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -67,6 +68,10 @@ void UMPProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 		return;
 	}
 	const FGameplayEffectSpecHandle DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+
+	const FMPGameplayTags GameplayTags = FMPGameplayTags::Get();
+	const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageEffectSpecHandle, GameplayTags.Damage, ScaledDamage);
 	Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
 
 	Projectile->FinishSpawning(SpawnTransform);
