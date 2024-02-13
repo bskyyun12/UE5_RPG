@@ -8,6 +8,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "MPGameplayTags.h"
 #include "Interaction/CombatInterface.h"
+#include <Kismet\GameplayStatics.h>
+#include <Player\MPPlayerController.h>
 
 UMPAttributeSet::UMPAttributeSet()
 {
@@ -95,10 +97,25 @@ void UMPAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 			}
 			else
 			{
+				// Assumming that GA_HitReact with HitReact tag was added in MPCharacterBase::StartAbilities.
 				FGameplayTagContainer TagContainer;
 				TagContainer.AddTag(FMPGameplayTags::Get().Effects_HitReact);
 				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 			}
+
+			ShowFloatingText(Props, LocalIncommingDamage);
+		}
+	}
+}
+
+void UMPAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage) const
+{
+	if (Props.SourceCharacter != Props.TargetCharacter)
+	{
+		AMPPlayerController* PC = Cast<AMPPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0));
+		if (PC)
+		{
+			PC->Client_ShowDamageNumber(Damage, Props.TargetCharacter);
 		}
 	}
 }

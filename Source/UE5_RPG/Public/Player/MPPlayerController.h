@@ -14,6 +14,7 @@ class IEnemyInterface;
 class UMPInputConfigDataAsset;
 class UMPAbilitySystemComponent;
 class USplineComponent;
+class UDamageTextComponent;
 
 UCLASS()
 class UE5_RPG_API AMPPlayerController : public APlayerController
@@ -24,6 +25,10 @@ public:
 	AMPPlayerController();
 
 	virtual void PlayerTick(float DeltaTime) override;
+
+	// Damage Text
+	UFUNCTION(Client, Reliable)
+	void Client_ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter);
 
 protected:
 	virtual void BeginPlay() override;
@@ -41,13 +46,12 @@ private:
 	TObjectPtr<UMPAbilitySystemComponent> MPAbilitySystemComponent;
 
 	TObjectPtr<UMPAbilitySystemComponent> GetASC();
-
 		
-	//~ Begin Input related
-	UPROPERTY(EditAnywhere, Category = "Input")
+#pragma region Input
+	UPROPERTY(EditAnywhere, Category = "MP|Input")
 	TObjectPtr<UInputMappingContext> MPContext;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, Category = "MP|Input")
 	TObjectPtr<UMPInputConfigDataAsset> InputConfigDataAsset;
 
 	void InputPressed(FGameplayTag InputTag);
@@ -65,5 +69,9 @@ private:
 	TObjectPtr<USplineComponent> Spline;
 	void Move(const FInputActionValue& InputActionValue);
 	void AutoRun();
-	//~ End Input related
+#pragma endregion
+
+	// Damage Text
+	UPROPERTY(EditDefaultsOnly, Category = "MP|UI")
+	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
 };

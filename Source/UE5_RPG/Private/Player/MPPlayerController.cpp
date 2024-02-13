@@ -8,8 +8,10 @@
 #include "Input/MPEnhancedInputComponent.h"
 #include "MPGameplayTags.h"
 #include "AbilitySystem/MPAbilitySystemComponent.h"
+#include "UI/Widget/DamageTextComponent.h"
 #include <AbilitySystemBlueprintLibrary.h>
 #include <Components/SplineComponent.h>
+#include <GameFramework/Character.h>
 #include <NavigationSystem.h>
 #include <NavigationPath.h>
 
@@ -108,6 +110,18 @@ void AMPPlayerController::SetupInputComponent()
 		return;
 	}
 	MPInputComponent->BindInputActions(InputConfigDataAsset, this, &ThisClass::InputPressed, &ThisClass::InputReleased, &ThisClass::InputHeld);
+}
+
+void AMPPlayerController::Client_ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+{
+	if (IsValid(TargetCharacter) && DamageTextComponentClass)
+	{
+		UDamageTextComponent* DamageTextComponent = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
+		DamageTextComponent->RegisterComponent();
+		DamageTextComponent->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		DamageTextComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		DamageTextComponent->SetDamageText(DamageAmount);
+	}
 }
 
 void AMPPlayerController::InputPressed(FGameplayTag InputTag)
