@@ -6,6 +6,8 @@
 #include "GameplayEffectExtension.h"
 #include "GameFramework\Character.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "MPGameplayTags.h"
+#include "Interaction/CombatInterface.h"
 
 UMPAttributeSet::UMPAttributeSet()
 {
@@ -62,7 +64,7 @@ void UMPAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 	SetEffectProperties(Data, Props);
 
 	UE_LOG(LogTemp, Warning, TEXT("UMPAttributeSet::PostGameplayEffectExecute => [%s] changed on [%s]. New value: [%f]"), *Data.EvaluatedData.Attribute.GetName(), *Props.TargetAvatarActor->GetName(), Data.EvaluatedData.Attribute.GetNumericValue(this));
-	
+
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
@@ -83,6 +85,20 @@ void UMPAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 
 			const bool bFatal = NewHealth <= 0.f;
+			if (bFatal)
+			{
+				ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
+				if (CombatInterface)
+				{
+					CombatInterface->Die();
+				}
+			}
+			else
+			{
+				FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(FMPGameplayTags::Get().Effects_HitReact);
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}
 		}
 	}
 }
@@ -102,7 +118,7 @@ void UMPAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& 
 		{
 			if (const APawn* Pawn = Cast<APawn>(Props.SourceAvatarActor))
 			{
-				Props.SourceController =Pawn->Controller;
+				Props.SourceController = Pawn->Controller;
 			}
 		}
 

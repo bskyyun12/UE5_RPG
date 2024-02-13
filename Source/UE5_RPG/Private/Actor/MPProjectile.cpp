@@ -10,6 +10,7 @@
 #include "Components/AudioComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "Interaction/CombatInterface.h"
 
 AMPProjectile::AMPProjectile()
 {

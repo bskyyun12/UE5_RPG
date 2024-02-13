@@ -8,6 +8,8 @@
 #include "Components/WidgetComponent.h"
 #include "UI/Widget/MPUserWidget.h"
 #include "AbilitySystem/MPAbilitySystemLibrary.h"
+#include "MPGameplayTags.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AMPEnemy::AMPEnemy()
 {
@@ -55,13 +57,34 @@ int32 AMPEnemy::GetPlayerLevel()
 	return Level;
 }
 
+void AMPEnemy::Die()
+{
+	SetLifeSpan(LifeSpan);
+	Super::Die();
+}
+
 void AMPEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+
 	InitAbilityActorInfo();
 	InitializeDefaultAttributes();
 	InitHealthBar();
+	
+	UMPAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+
+	// Bind HitReact Tag changed
+	AbilitySystemComponent->RegisterGameplayTagEvent(FMPGameplayTags::Get().Effects_HitReact).AddUObject(
+		this, &ThisClass::HitReactTagChanged
+	);
+}
+
+void AMPEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bHitReacting = NewCount > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
 }
 
 void AMPEnemy::InitAbilityActorInfo()

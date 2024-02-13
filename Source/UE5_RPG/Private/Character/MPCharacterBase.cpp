@@ -4,8 +4,8 @@
 #include "Character/MPCharacterBase.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/MPAbilitySystemComponent.h"
-#include "UE5_RPG\UE5_RPG.h"
-#include "Components\CapsuleComponent.h"
+#include "UE5_RPG/UE5_RPG.h"
+#include "Components/CapsuleComponent.h"
 
 AMPCharacterBase::AMPCharacterBase()
 {
@@ -82,9 +82,63 @@ void AMPCharacterBase::AddStartAbilities() const
 	}
 }
 
+void AMPCharacterBase::Dissolve()
+{
+	if (IsValid(DissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* DynamicMaterialInstance = UMaterialInstanceDynamic::Create(DissolveMaterialInstance, this);
+
+		for (int i = 0; i < GetMesh()->GetMaterials().Num(); i++)
+		{
+			GetMesh()->SetMaterial(i, DynamicMaterialInstance);
+		}
+
+		StartDissolveTimeline(DynamicMaterialInstance);
+	}
+
+	if (IsValid(WeaponDissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* DynamicMaterialInstance = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
+
+		for (int i = 0; i < GetMesh()->GetMaterials().Num(); i++)
+		{
+			Weapon->SetMaterial(i, DynamicMaterialInstance);
+		}
+
+		WeaponStartDissolveTimeline(DynamicMaterialInstance);
+	}
+}
+
 UAbilitySystemComponent* AMPCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+UAnimMontage* AMPCharacterBase::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
+}
+
+void AMPCharacterBase::Die()
+{
+	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	Multicast_HandleDeath();
+}
+
+void AMPCharacterBase::Multicast_HandleDeath_Implementation()
+{
+	Dissolve();
+
+	Weapon->SetSimulatePhysics(true);
+	Weapon->SetEnableGravity(true);
+	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetEnableGravity(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 FVector AMPCharacterBase::GetCombatSocketLocation()
@@ -126,7 +180,7 @@ void AMPCharacterBase::Multicast_OnPossess_Implementation(ACharacter* TargetChar
 	* TODO: Overwrite current abilities or add a new one?
 	* Maybe one of the ability slot is only for abilities that you can get from enemies??
 	* Or you can keep one of the abilities and overwrite all the other abilities??
-	* 
+	*
 	* For now, Main character has 1 ability and the enemy has 1 ability. So I'm just adding target enemy's ability
 	*/
 	if (!HasAuthority())

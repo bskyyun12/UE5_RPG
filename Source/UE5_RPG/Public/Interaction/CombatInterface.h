@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+class UAnimMontage;
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI, BlueprintType)
 class UCombatInterface : public UInterface
@@ -13,9 +15,6 @@ class UCombatInterface : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
 class UE5_RPG_API ICombatInterface
 {
 	GENERATED_BODY()
@@ -31,4 +30,17 @@ public:
 	void UpdateFacingTarget(const FVector& Target);	
 
 	virtual void OnPossess(ACharacter* TargetCharacter) = 0;
+
+	/*
+	* Called in UMPAttributeSet::PostGameplayEffectExecute when the health is below 0
+	*/
+	virtual void Die() = 0;
+
+	/*
+	* BlueprintNativeEvent - It will automatically generate a virtual native version that exists in C++
+	* Should be GetHitReactMontage_Implementation when overriding this.
+	* Called in blueprint GA_HitReact
+	*/ 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UAnimMontage* GetHitReactMontage();
 };

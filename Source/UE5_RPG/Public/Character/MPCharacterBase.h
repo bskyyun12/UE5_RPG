@@ -27,6 +27,14 @@ public:
 	// Creating getter for AttributeSet is convenient
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
+	// Begin ICombatInterface
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	virtual void Die() override;
+	// End ICombatInterface
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void Multicast_HandleDeath();
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "MPCharacter|Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
@@ -87,9 +95,28 @@ protected:
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, const float& Level) const;
 
 	void AddStartAbilities() const;
+	
+#pragma region Dissolve
+	void Dissolve();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void WeaponStartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MPCharacter|Combat")
+	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MPCharacter|Combat")
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
+#pragma endregion
 
 private:
 	// Abilities that this character should have initially.
 	UPROPERTY(EditAnywhere, Category = "MPCharacter|GAS|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartAbilities;
+	
+	UPROPERTY(EditAnywhere, Category = "MPCharacter|Combat")
+	TObjectPtr<UAnimMontage> HitReactMontage;
 };

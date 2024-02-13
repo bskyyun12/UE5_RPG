@@ -103,3 +103,29 @@ void UMPAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldCo
 	FGameplayEffectSpecHandle VitalAttributesSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfoDataAsset->VitalAttributes, Level, ContextHandle);
 	ASC->ApplyGameplayEffectSpecToSelf(*VitalAttributesSpecHandle.Data.Get());
 }
+
+void UMPAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
+{
+	if (!ensure(ASC))
+	{
+		return;
+	}
+
+	const AMPGameModeBase* MPGM = Cast<AMPGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (!MPGM)
+	{
+		return;
+	}
+
+	UCharacterClassInfoDataAsset* CharacterClassInfoDataAsset = MPGM->CharacterInfoDataAsset;
+	if (!ensure(CharacterClassInfoDataAsset))
+	{
+		return;
+	}
+
+	for (auto AbilityClass: CharacterClassInfoDataAsset->CommonAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+		ASC->GiveAbility(AbilitySpec);
+	}
+}

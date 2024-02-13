@@ -24,15 +24,28 @@ public:
 	virtual void UnHighlightActor() override;
 	//~ End IEnemyInterface
 	
-	//~ Begin IEnemyInterface
+	//~ Begin ICombatInterface
 	virtual int32 GetPlayerLevel() override;
-	//~ End IEnemyInterface
+	virtual void Die() override;
+	//~ End ICombatInterface
 	
 	UPROPERTY(BlueprintAssignable, Category = "MPEnemy|Attribute")
 	FOnAttributeChangedDelegate OnHealthChanged;
 		
 	UPROPERTY(BlueprintAssignable, Category = "MPEnemy|Attribute")
 	FOnAttributeChangedDelegate OnMaxHealthChanged;
+
+	UFUNCTION()
+	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	
+	UPROPERTY(BlueprintReadOnly, Category = "MPEnemy|Combat")
+	bool bHitReacting;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "MPEnemy|Combat")
+	float BaseWalkSpeed = 250.f;
+		
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MPEnemy|Combat")
+	float LifeSpan = 5.f;
 
 protected:
 	virtual void BeginPlay() override;

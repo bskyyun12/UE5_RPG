@@ -70,7 +70,7 @@ void UMPProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 	const FGameplayEffectSpecHandle DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
 
 	const FMPGameplayTags GameplayTags = FMPGameplayTags::Get();
-	const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	const float ScaledDamage = Damage.GetValueAtLevel(10);
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageEffectSpecHandle, GameplayTags.Damage, ScaledDamage);
 	Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
 
