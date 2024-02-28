@@ -112,7 +112,7 @@ void AMPPlayerController::SetupInputComponent()
 	MPInputComponent->BindInputActions(InputConfigDataAsset, this, &ThisClass::InputPressed, &ThisClass::InputReleased, &ThisClass::InputHeld);
 }
 
-void AMPPlayerController::Client_ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+void AMPPlayerController::Client_ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bBlockHit, bool bCriticalHit)
 {
 	if (IsValid(TargetCharacter) && DamageTextComponentClass)
 	{
@@ -120,7 +120,7 @@ void AMPPlayerController::Client_ShowDamageNumber_Implementation(float DamageAmo
 		DamageTextComponent->RegisterComponent();
 		DamageTextComponent->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		DamageTextComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-		DamageTextComponent->SetDamageText(DamageAmount);
+		DamageTextComponent->SetDamageText(DamageAmount, bBlockHit, bCriticalHit);
 	}
 }
 

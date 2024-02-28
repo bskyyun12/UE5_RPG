@@ -67,7 +67,16 @@ void UMPProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 	{
 		return;
 	}
-	const FGameplayEffectSpecHandle DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+	FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+	EffectContextHandle.SetAbility(this);
+	EffectContextHandle.AddSourceObject(Projectile);
+	TArray<TWeakObjectPtr<AActor>> Actors;
+	Actors.Add(Projectile);
+	EffectContextHandle.AddActors(Actors); // It's a bit silly to add, but doing this to learn that we CAN add.
+	FHitResult HitResult;
+	HitResult.Location = TargetLocation;
+	EffectContextHandle.AddHitResult(HitResult); // It's a bit silly to add, but doing this to learn that we CAN add.
+	const FGameplayEffectSpecHandle DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
 
 	const FMPGameplayTags GameplayTags = FMPGameplayTags::Get();
 	const float ScaledDamage = Damage.GetValueAtLevel(10);

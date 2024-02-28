@@ -28,7 +28,7 @@ public:
 
 	// Damage Text
 	UFUNCTION(Client, Reliable)
-	void Client_ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter);
+	void Client_ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter, bool bBlockHit, bool bCriticalHit);
 
 protected:
 	virtual void BeginPlay() override;

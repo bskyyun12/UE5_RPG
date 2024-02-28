@@ -9,6 +9,7 @@
 #include "Game/MPGameModeBase.h"
 #include "AbilitySystem/Data/CharacterClassInfoDataAsset.h"
 #include "AbilitySystemComponent.h"
+#include <MPAbilityTypes.h>
 
 UOverlayWidgetController* UMPAbilitySystemLibrary::GetOverlayWidgetController(const UObject* WorldContextObject)
 {
@@ -66,7 +67,7 @@ UAttributeMenuWidgetController* UMPAbilitySystemLibrary::GetAttributeMenuWidgetC
 	UAttributeSet* AS = PS->GetAttributeSet();
 	ensure(AS);
 
-	const FWidgetControllerParams WidgetControllerParams(PC, PS, ASC, AS);
+	FWidgetControllerParams WidgetControllerParams(PC, PS, ASC, AS);
 	return MPHUD->CreateOrGetAttributeMenuWidgetController(WidgetControllerParams);
 }
 
@@ -77,13 +78,7 @@ void UMPAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldCo
 		return;
 	}
 
-	const AMPGameModeBase* MPGM = Cast<AMPGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (!MPGM)
-	{
-		return;
-	}
-
-	UCharacterClassInfoDataAsset* CharacterClassInfoDataAsset = MPGM->CharacterInfoDataAsset;
+	UCharacterClassInfoDataAsset* CharacterClassInfoDataAsset = GetCharacterClassInfoDataAsset(WorldContextObject);
 	if (!ensure(CharacterClassInfoDataAsset))
 	{
 		return;
@@ -97,10 +92,10 @@ void UMPAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldCo
 	const FGameplayEffectSpecHandle PrimaryAttributesSpecHandle = ASC->MakeOutgoingSpec(ClassDefaultInfo.PrimaryAttributes, Level, ContextHandle);
 	ASC->ApplyGameplayEffectSpecToSelf(*PrimaryAttributesSpecHandle.Data.Get());
 
-	FGameplayEffectSpecHandle SecondaryAttributesSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfoDataAsset->SecondaryAttributes, Level, ContextHandle);
+	const FGameplayEffectSpecHandle SecondaryAttributesSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfoDataAsset->SecondaryAttributes, Level, ContextHandle);
 	ASC->ApplyGameplayEffectSpecToSelf(*SecondaryAttributesSpecHandle.Data.Get());
 
-	FGameplayEffectSpecHandle VitalAttributesSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfoDataAsset->VitalAttributes, Level, ContextHandle);
+	const FGameplayEffectSpecHandle VitalAttributesSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfoDataAsset->VitalAttributes, Level, ContextHandle);
 	ASC->ApplyGameplayEffectSpecToSelf(*VitalAttributesSpecHandle.Data.Get());
 }
 
@@ -111,13 +106,7 @@ void UMPAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextOb
 		return;
 	}
 
-	const AMPGameModeBase* MPGM = Cast<AMPGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (!MPGM)
-	{
-		return;
-	}
-
-	UCharacterClassInfoDataAsset* CharacterClassInfoDataAsset = MPGM->CharacterInfoDataAsset;
+	const UCharacterClassInfoDataAsset* CharacterClassInfoDataAsset = GetCharacterClassInfoDataAsset(WorldContextObject);
 	if (!ensure(CharacterClassInfoDataAsset))
 	{
 		return;
@@ -125,7 +114,49 @@ void UMPAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextOb
 
 	for (auto AbilityClass: CharacterClassInfoDataAsset->CommonAbilities)
 	{
-		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+		const FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		ASC->GiveAbility(AbilitySpec);
+	}
+}
+
+UCharacterClassInfoDataAsset* UMPAbilitySystemLibrary::GetCharacterClassInfoDataAsset(const UObject* WorldContextObject)
+{
+	const AMPGameModeBase* MPGM = Cast<AMPGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (MPGM == nullptr)
+	{
+		return nullptr;
+	}
+
+	return MPGM->CharacterInfoDataAsset;
+}
+
+bool UMPAbilitySystemLibrary::GetIsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	const FMPGameplayEffectContext* MPContext = static_cast<const FMPGameplayEffectContext*>(EffectContextHandle.Get());
+	return MPContext ? MPContext->GetIsBlockedHit() : false;
+}
+
+bool UMPAbilitySystemLibrary::GetIsCriticalHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	const FMPGameplayEffectContext* MPContext = static_cast<const FMPGameplayEffectContext*>(EffectContextHandle.Get());
+	return MPContext ? MPContext->GetIsCriticalHit() : false;
+}
+
+void UMPAbilitySystemLibrary::SetIsBlockedHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool InIsBlockedHit)
+{
+	//FMPGameplayEffectContext* MPContext = StaticCast<FMPGameplayEffectContext*>(EffectContextHandle.Get());
+	FMPGameplayEffectContext* MPContext = static_cast<FMPGameplayEffectContext*>(EffectContextHandle.Get());
+	if (MPContext)
+	{
+		MPContext->SetIsBlockedHit(InIsBlockedHit);
+	}
+}
+
+void UMPAbilitySystemLibrary::SetIsCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool InIsCriticalHit)
+{
+	FMPGameplayEffectContext* MPContext = static_cast<FMPGameplayEffectContext*>(EffectContextHandle.Get());
+	if (MPContext)
+	{
+		MPContext->SetIsCriticalHit(InIsCriticalHit);
 	}
 }

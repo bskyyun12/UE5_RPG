@@ -190,7 +190,7 @@ public:
 	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
 		
 	/*
-	*	Meta Attributes
+	*	Meta Attributes (They are NOT replicated)
 	*	IncomingDamage:	
 	*/
 	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
@@ -199,5 +199,5 @@ public:
 
 private:
 	void SetEffectProperties(const struct FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
-	void ShowFloatingText(const FEffectProperties& Props, float Damage) const;
+	void ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockHit, bool bCriticalHit) const;
 };

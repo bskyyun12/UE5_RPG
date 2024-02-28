@@ -42,6 +42,23 @@ EDataValidationResult UCharacterClassInfoDataAsset::IsDataValid(FDataValidationC
 		Result = EDataValidationResult::Invalid;
 	}
 
+	for (int i = 0; i < CommonAbilities.Num(); i++)
+	{
+		if (CommonAbilities[i] == nullptr)
+		{			
+			const FText ErrorMsg = FText::FromString(FString::Printf(TEXT("Index %i in CommonAbilities array is not valid"), i));
+			Context.AddError(ErrorMsg);
+			Result = EDataValidationResult::Invalid;
+		}
+	}
+
+	if (DamageCalcCoefficients == nullptr)
+	{
+		const FText ErrorMsg = FText::FromString(FString::Printf(TEXT("DamageCalcCoefficients value should be valid!")));
+		Context.AddError(ErrorMsg);
+		Result = EDataValidationResult::Invalid;
+	}
+
 	return Result;
 }
 #endif

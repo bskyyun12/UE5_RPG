@@ -10,6 +10,7 @@
 #include "Interaction/CombatInterface.h"
 #include <Kismet\GameplayStatics.h>
 #include <Player\MPPlayerController.h>
+#include "AbilitySystem\MPAbilitySystemLibrary.h"
 
 UMPAttributeSet::UMPAttributeSet()
 {
@@ -102,20 +103,21 @@ void UMPAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 				TagContainer.AddTag(FMPGameplayTags::Get().Effects_HitReact);
 				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 			}
-
-			ShowFloatingText(Props, LocalIncommingDamage);
+			const bool bBlockHit = UMPAbilitySystemLibrary::GetIsBlockedHit(Props.EffectContextHandle);
+			const bool bCriticalHit = UMPAbilitySystemLibrary::GetIsCriticalHit(Props.EffectContextHandle);
+			ShowFloatingText(Props, LocalIncommingDamage, bBlockHit, bCriticalHit);
 		}
 	}
 }
 
-void UMPAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage) const
+void UMPAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockHit, bool bCriticalHit) const
 {
 	if (Props.SourceCharacter != Props.TargetCharacter)
 	{
 		AMPPlayerController* PC = Cast<AMPPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0));
 		if (PC)
 		{
-			PC->Client_ShowDamageNumber(Damage, Props.TargetCharacter);
+			PC->Client_ShowDamageNumber(Damage, Props.TargetCharacter, bBlockHit, bCriticalHit);
 		}
 	}
 }

@@ -32,19 +32,22 @@ class UE5_RPG_API UCharacterClassInfoDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
+	FCharacterClassDefaultInfo GetClassDefaultInfo(ECharacterClass CharacterClass);
+
+	UPROPERTY(EditDefaultsOnly, Category = "MP|Character Class Defaults")
 	TMap<ECharacterClass, FCharacterClassDefaultInfo> CharacterClassInfoMap;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults")
+	UPROPERTY(EditDefaultsOnly, Category = "MP|Common Class Defaults")
 	TSubclassOf<UGameplayEffect> SecondaryAttributes;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults")
+	UPROPERTY(EditDefaultsOnly, Category = "MP|Common Class Defaults")
 	TSubclassOf<UGameplayEffect> VitalAttributes;
-
-	FCharacterClassDefaultInfo GetClassDefaultInfo(ECharacterClass CharacterClass);
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults")
+	UPROPERTY(EditDefaultsOnly, Category = "MP|Common Class Defaults")
 	TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;
+		
+	UPROPERTY(EditDefaultsOnly, Category = "MP|Common Class Defaults|Damage")
+	TObjectPtr<UCurveTable> DamageCalcCoefficients;
 
 #if WITH_EDITOR
 	// Valid if Attribute is valid in AttributeInfoArray
